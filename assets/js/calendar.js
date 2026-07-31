@@ -16,8 +16,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    let visibleMonth = new Date(today.getFullYear(), today.getMonth(), 1);
-    let selectedDate = toDateKey(today);
+    const requestedDate = new URLSearchParams(window.location.search).get('date');
+    const validRequestedDate = /^\d{4}-\d{2}-\d{2}$/.test(requestedDate || '') &&
+        toDateKey(fromDateKey(requestedDate)) === requestedDate;
+    let selectedDate = validRequestedDate ? requestedDate : toDateKey(today);
+    const initialDate = fromDateKey(selectedDate);
+    let visibleMonth = new Date(initialDate.getFullYear(), initialDate.getMonth(), 1);
 
     const monthGrid = document.getElementById('monthGrid');
     const monthLabel = document.getElementById('monthLabel');
@@ -216,10 +220,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     const themeToggle = document.getElementById('themeToggle');
-    if (localStorage.getItem('prismTheme') === 'dark') document.body.classList.add('dark-theme');
     themeToggle.addEventListener('click', () => {
-        document.body.classList.toggle('dark-theme');
-        localStorage.setItem('prismTheme', document.body.classList.contains('dark-theme') ? 'dark' : 'light');
+        const isDark = document.documentElement.classList.toggle('dark-theme');
+        try {
+            localStorage.setItem('prismTheme', isDark ? 'dark' : 'light');
+        } catch (_) {}
     });
 
     const profileToggle = document.getElementById('profileToggle');

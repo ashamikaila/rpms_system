@@ -14,7 +14,14 @@ date_default_timezone_set('Asia/Manila');
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calendar | CEU RPMS Workload Assistant</title>
-    <link rel="icon" type="image/jpeg" href="assets/images/ceu_logo1.jpg">
+    <script>
+        try {
+            if (localStorage.getItem('prismTheme') === 'dark') {
+                document.documentElement.classList.add('dark-theme');
+            }
+        } catch (_) {}
+    </script>
+    <link rel="icon" type="image/png" href="assets/images/prismicon.png">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/dashboard.css">
     <link rel="stylesheet" href="assets/css/calendar.css">
@@ -24,15 +31,18 @@ date_default_timezone_set('Asia/Manila');
 <div class="container">
     <aside class="sidebar">
         <div class="sidebar-header">
-            <img src="assets/images/ceu_logo2.jpg" alt="CEU Logo" class="sidebar-brand-logo">
-            <h3>PRISM Assistant</h3>
+            <img src="assets/images/prismlogo1.png?v=2" alt="PRISM Assistant logo" class="sidebar-brand-logo">
+            <div class="sidebar-brand-copy">
+                <strong>IERB Progress &amp; Reporting System</strong>
+                <span>Centro Escolar University - Malolos &bull; RPMS</span>
+            </div>
         </div>
         <ul class="nav-links">
             <li><a href="dashboard.php"><i class="fa-solid fa-chart-line"></i><span>Dashboard</span></a></li>
-            <li><a href="#"><i class="fa-solid fa-user-graduate"></i><span>Students</span></a></li>
-            <li><a href="#"><i class="fa-solid fa-file-signature"></i><span>IERB Progress</span></a></li>
-            <li><a href="#"><i class="fa-solid fa-folder-open"></i><span>Documents</span></a></li>
-            <li><a href="#"><i class="fa-solid fa-file-pdf"></i><span>Reports</span></a></li>
+            <li><a href="student.php"><i class="fa-solid fa-user-graduate"></i><span>Students</span></a></li>
+            <li><a href="ierbprog.php"><i class="fa-solid fa-file-signature"></i><span>IERB Progress</span></a></li>
+            <li><a href="documents.php"><i class="fa-solid fa-folder-open"></i><span>Documents</span></a></li>
+            <li><a href="reports.php"><i class="fa-solid fa-file-pdf"></i><span>Reports</span></a></li>
             <li class="active"><a href="calendar.php"><i class="fa-solid fa-calendar-days"></i><span>Calendar</span></a></li>
         </ul>
         <div class="sidebar-bottom">
@@ -47,6 +57,7 @@ date_default_timezone_set('Asia/Manila');
                 </div>
                 <div class="profile-menu" id="profileMenu">
                     <a href="#"><i class="fa-solid fa-user-gear"></i> Profile</a>
+                    <a href="#"><i class="fa-solid fa-gear"></i> Settings</a>
                     <a href="#"><i class="fa-solid fa-sliders"></i> Activity Logs</a>
                     <hr>
                     <a href="logout.php" class="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> Log Out</a>

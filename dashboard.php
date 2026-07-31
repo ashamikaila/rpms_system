@@ -32,20 +32,30 @@ $reminders = [];
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PRISM Dashboard | CEU RPMS Workload Assistant</title>
-    <link rel="icon" type="image/jpeg" href="assets/images/ceu_logo1.jpg">
+    <title>PRISM | Dashboard</title>
+    <script>
+        try {
+            if (localStorage.getItem('prismTheme') === 'dark') {
+                document.documentElement.classList.add('dark-theme');
+            }
+        } catch (_) {}
+    </script>
+    <link rel="icon" type="image/png" href="assets/images/prismicon.png">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/dashboard.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 </head>
-<body>
+<body data-reminder-user="<?php echo htmlspecialchars(hash('sha256', $user_email), ENT_QUOTES, 'UTF-8'); ?>">
 
 <div class="container">
     <!-- SIDEBAR WITH EASY-TO-UNDERSTAND LABELS -->
     <aside class="sidebar">
         <div class="sidebar-header">
-            <img src="assets/images/ceu_logo2.jpg" alt="CEU Logo" class="sidebar-brand-logo">
-            <h3>PRISM Assistant</h3>
+            <img src="assets/images/prismlogo1.png?v=2" alt="PRISM Assistant logo" class="sidebar-brand-logo">
+            <div class="sidebar-brand-copy">
+                <strong>IERB Progress &amp; Reporting System</strong>
+                <span>Centro Escolar University - Malolos &bull; RPMS</span>
+            </div>
         </div>
 
         <ul class="nav-links">
@@ -56,25 +66,25 @@ $reminders = [];
                 </a>
             </li>
             <li>
-                <a href="#">
+                <a href="student.php">
                     <i class="fa-solid fa-user-graduate"></i>
                     <span>Students</span>
                 </a>
             </li>
             <li>
-                <a href="#">
+                <a href="ierbprog.php">
                     <i class="fa-solid fa-file-signature"></i>
                     <span>IERB Progress</span>
                 </a>
             </li>
             <li>
-                <a href="#">
+                <a href="documents.php">
                     <i class="fa-solid fa-folder-open"></i>
                     <span>Documents</span>
                 </a>
             </li>
             <li>
-                <a href="#">
+                <a href="reports.php">
                     <i class="fa-solid fa-file-pdf"></i>
                     <span>Reports</span>
                 </a>
@@ -100,6 +110,7 @@ $reminders = [];
 
                 <div class="profile-menu" id="profileMenu">
                     <a href="#"><i class="fa-solid fa-user-gear"></i> Profile</a>
+                    <a href="#"><i class="fa-solid fa-gear"></i> Settings</a>
                     <a href="#"><i class="fa-solid fa-sliders"></i> Activity Logs</a>
                     <hr>
                     <a href="logout.php" class="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> Log Out</a>
@@ -117,14 +128,51 @@ $reminders = [];
             </div>
 
             <div class="top-controls">
+                <div class="quick-actions-menu-wrap">
+                    <button type="button" class="quick-actions-toggle" id="quickActionsToggle" title="Quick actions" aria-label="Quick actions" aria-expanded="false">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    </button>
+                    <div class="quick-actions-dropdown" id="quickActionsDropdown">
+                        <div class="quick-dropdown-heading">
+                            <div><span>AI workspace</span><strong>Quick Actions</strong></div>
+                            <i class="fa-solid fa-wand-magic-sparkles"></i>
+                        </div>
+                        <button type="button" class="quick-action" onclick="openReportModal()">
+                            <span class="quick-action-icon report"><i class="fa-solid fa-file-pdf"></i></span>
+                            <span class="quick-action-copy"><strong>Generate AI Report</strong><small>Create a consolidated RPMS PDF report</small></span>
+                            <i class="fa-solid fa-chevron-right action-arrow"></i>
+                        </button>
+                        <button type="button" class="quick-action" onclick="openSummaryModal('uploaded document')">
+                            <span class="quick-action-icon summary"><i class="fa-solid fa-file-lines"></i></span>
+                            <span class="quick-action-copy"><strong>Summarize Document</strong><small>Open the document summary workspace</small></span>
+                            <i class="fa-solid fa-chevron-right action-arrow"></i>
+                        </button>
+                        <div class="recent-ai-reports" id="recentAiReports">
+                            <div class="recent-reports-title"><strong>Recent AI Reports</strong><i class="fa-solid fa-clock-rotate-left"></i></div>
+                            <ul id="recentAiReportList"></ul>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="theme-toggle" id="themeToggle" title="Toggle Light/Dark Theme">
                     <i class="fa-solid fa-sun light-icon"></i>
                     <i class="fa-solid fa-moon dark-icon"></i>
                 </div>
 
-                <div class="notification-icon" title="Automated Follow-ups Sent">
-                    <i class="fa-solid fa-bell"></i>
-                    <span class="badge"></span>
+                <div class="notification-menu-wrap">
+                    <button type="button" class="notification-icon" id="notificationToggle" title="Notifications and confirmations" aria-label="Notifications and confirmations" aria-expanded="false">
+                        <i class="fa-solid fa-bell"></i>
+                    </button>
+                    <div class="notification-dropdown" id="notificationDropdown">
+                        <div class="notification-dropdown-heading">
+                            <div><span>Status center</span><strong>Notifications &amp; Confirmations</strong></div>
+                            <i class="fa-solid fa-envelope-circle-check"></i>
+                        </div>
+                        <div class="notification-empty">
+                            <i class="fa-regular fa-bell-slash"></i>
+                            <p>No status updates, email confirmations, or automated notifications to display.</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </header>
@@ -150,22 +198,22 @@ $reminders = [];
         <section class="cards">
             <div class="card">
                 <i class="fa-solid fa-user-graduate"></i>
-                <h1><?php echo $total_researchers; ?></h1>
+                <h1 id="totalResearchersMetric"><?php echo $total_researchers; ?></h1>
                 <p>Total Student Researchers</p>
             </div>
             <div class="card">
                 <i class="fa-solid fa-hourglass-half"></i>
-                <h1><?php echo $pending_ierb; ?></h1>
+                <h1 id="pendingIerbMetric"><?php echo $pending_ierb; ?></h1>
                 <p>Pending Ethics Review</p>
             </div>
             <div class="card">
                 <i class="fa-solid fa-circle-check"></i>
-                <h1><?php echo $approved_ethics; ?></h1>
+                <h1 id="approvedEthicsMetric"><?php echo $approved_ethics; ?></h1>
                 <p>IERB Approved</p>
             </div>
             <div class="card card-alert">
                 <i class="fa-solid fa-triangle-exclamation"></i>
-                <h1><?php echo $delayed_submissions; ?></h1>
+                <h1 id="delayedSubmissionsMetric"><?php echo $delayed_submissions; ?></h1>
                 <p>Delayed Submissions</p>
             </div>
         </section>
@@ -182,19 +230,19 @@ $reminders = [];
                     <div class="pipeline-steps">
                         <div class="step-item">
                             <span>Initial Submission</span>
-                            <strong>0 Groups</strong>
+                            <strong id="initialStageCount">0 Groups</strong>
                         </div>
                         <div class="step-item">
                             <span>Ethics Review</span>
-                            <strong>0 Groups</strong>
+                            <strong id="reviewStageCount">0 Groups</strong>
                         </div>
                         <div class="step-item delayed">
                             <span>Revision Phase</span>
-                            <strong>0 Delayed</strong>
+                            <strong id="revisionStageCount">0 Delayed</strong>
                         </div>
                         <div class="step-item approved">
                             <span>Board Approved</span>
-                            <strong>0 Groups</strong>
+                            <strong id="approvedStageCount">0 Groups</strong>
                         </div>
                     </div>
                 </div>
@@ -213,7 +261,6 @@ $reminders = [];
                                 <option value="low-to-high">Progress: Low to high</option>
                             </select>
                             <button class="btn-secondary-sm"><i class="fa-solid fa-file-csv"></i> Import CSV</button>
-                            <button class="small-btn"><i class="fa-solid fa-plus"></i> Add Entry</button>
                         </div>
                     </div>
                     <table class="data-table">
@@ -229,36 +276,7 @@ $reminders = [];
                                 <th>Action</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <?php foreach($ierb_records as $row): ?>
-                                <tr data-course="<?php echo htmlspecialchars($row['course'] ?? ''); ?>" data-progress="<?php echo htmlspecialchars($row['overall_progress'] ?? ''); ?>">
-                                    <td><strong><?php echo $row['group_id']; ?></strong></td>
-                                    <td><?php echo htmlspecialchars($row['course'] ?? '—'); ?></td>
-                                    <td>
-                                        <div class="title-cell">
-                                            <span><?php echo $row['title']; ?></span>
-                                            <small>Lead: <?php echo $row['lead']; ?></small>
-                                        </div>
-                                    </td>
-                                    <td><span class="stage-tag"><?php echo $row['stage']; ?></span></td>
-                                    <td><?php echo htmlspecialchars($row['pending_requirements'] ?? '—'); ?></td>
-                                    <td><span class="progress-value"><?php echo htmlspecialchars($row['overall_progress'] ?? '—'); ?></span></td>
-                                    <td>
-                                        <span class="status-badge <?php echo strtolower($row['status']); ?>">
-                                            <?php echo $row['status']; ?>
-                                        </span>
-                                        <span class="email-status-text"><i class="fa-regular fa-paper-plane"></i> <?php echo $row['last_email']; ?></span>
-                                    </td>
-                                    <td>
-                                        <button class="icon-btn" title="Send Follow-up Alert" onclick="alert('Automated follow-up sent to student lead!')"><i class="fa-solid fa-paper-plane"></i></button>
-                                        <button class="icon-btn" title="View Quick Summary" onclick="openSummaryModal('<?php echo $row['group_id']; ?>')"><i class="fa-solid fa-file-lines"></i></button>
-                                    </td>
-                                </tr>
-                            <?php endforeach; ?>
-                            <?php if (empty($ierb_records)): ?>
-                                <tr><td colspan="8">No IERB records available.</td></tr>
-                            <?php endif; ?>
-                        </tbody>
+                        <tbody id="ierbMonitorBody"></tbody>
                     </table>
                 </div>
 
@@ -307,32 +325,39 @@ $reminders = [];
                     <div class="reminders-section">
                         <div class="reminders-header">
                             <h4><i class="fa-solid fa-calendar-check"></i> Tasks & Deadlines</h4>
-                            <button class="add-btn" title="Add Alert"><i class="fa-solid fa-plus"></i></button>
+                            <a class="add-btn" href="calendar.php" title="Add reminder" aria-label="Add reminder"><i class="fa-solid fa-plus"></i></a>
                         </div>
-                        <ul class="reminder-list">
-                            <?php foreach($reminders as $item): ?>
-                                <li class="reminder-item">
-                                    <div class="reminder-details">
-                                        <strong><?php echo htmlspecialchars($item['title']); ?></strong>
-                                        <span><i class="fa-regular fa-clock"></i> <?php echo htmlspecialchars($item['date']); ?> • <?php echo htmlspecialchars($item['time']); ?></span>
-                                    </div>
-                                    <span class="reminder-tag <?php echo strtolower(str_replace(' ', '-', $item['tag'])); ?>"><?php echo htmlspecialchars($item['tag']); ?></span>
-                                </li>
-                            <?php endforeach; ?>
-                            <?php if (empty($reminders)): ?>
-                                <li class="reminder-item">No scheduled alerts.</li>
-                            <?php endif; ?>
-                        </ul>
+                        <ul class="reminder-list" id="dashboardReminderList"></ul>
                     </div>
                 </div>
 
-                <div class="content-box">
-                    <h3><i class="fa-solid fa-envelope-circle-check"></i> Notification & Confirmation Status</h3>
-                    <p class="empty-state">No status updates, email confirmations, or automated notifications to display.</p>
-                </div>
             </div>
         </section>
     </main>
+</div>
+
+<!-- MODAL: DASHBOARD DAY TASKS -->
+<div class="modal-overlay" id="dashboardDayModal">
+    <div class="modal-card dashboard-day-modal" role="dialog" aria-modal="true" aria-labelledby="dashboardDayTitle">
+        <div class="day-modal-heading">
+            <div><span>Selected date</span><h3 id="dashboardDayTitle">Tasks &amp; Notes</h3></div>
+            <button type="button" class="day-modal-close" onclick="closeDashboardDay()" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <form id="dashboardTaskForm" autocomplete="off">
+            <label for="dashboardTaskTitle">Task reminder</label>
+            <input type="text" id="dashboardTaskTitle" maxlength="120" placeholder="What needs to be done?" required>
+            <div class="day-form-row">
+                <div><label for="dashboardTaskTime">Time <span>(optional)</span></label><input type="time" id="dashboardTaskTime"></div>
+            </div>
+            <label for="dashboardTaskNotes">Notes <span>(optional)</span></label>
+            <textarea id="dashboardTaskNotes" rows="3" maxlength="500" placeholder="Add helpful details..."></textarea>
+            <div class="modal-actions">
+                <button type="button" class="btn-secondary-sm" onclick="closeDashboardDay()">Close</button>
+                <button type="submit" class="small-btn"><i class="fa-solid fa-plus"></i> Add task</button>
+            </div>
+        </form>
+        <div class="dashboard-day-tasks" id="dashboardDayTasks"></div>
+    </div>
 </div>
 
 <!-- MODAL: AI DOCUMENT SUMMARY -->
@@ -361,7 +386,7 @@ $reminders = [];
         </div>
         <div class="modal-actions">
             <button class="btn-secondary-sm" onclick="closeReportModal()">Cancel</button>
-            <button class="small-btn" onclick="alert('Generating PDF Report...'); closeReportModal();"><i class="fa-solid fa-download"></i> Download PDF</button>
+            <button class="small-btn" onclick="generateAIReport()"><i class="fa-solid fa-download"></i> Download PDF</button>
         </div>
     </div>
 </div>
@@ -380,52 +405,179 @@ $reminders = [];
         profileMenu.classList.remove('show');
     });
 
+    const quickActionsToggle = document.getElementById('quickActionsToggle');
+    const quickActionsDropdown = document.getElementById('quickActionsDropdown');
+
+    function closeQuickActions() {
+        quickActionsDropdown.classList.remove('show');
+        quickActionsToggle.setAttribute('aria-expanded', 'false');
+    }
+
+    quickActionsToggle.addEventListener('click', event => {
+        event.stopPropagation();
+        closeNotificationStatus();
+        const isOpen = quickActionsDropdown.classList.toggle('show');
+        quickActionsToggle.setAttribute('aria-expanded', String(isOpen));
+    });
+    quickActionsDropdown.addEventListener('click', event => event.stopPropagation());
+    document.addEventListener('click', closeQuickActions);
+    document.addEventListener('keydown', event => {
+        if (event.key === 'Escape') closeQuickActions();
+    });
+
+    const notificationToggle = document.getElementById('notificationToggle');
+    const notificationDropdown = document.getElementById('notificationDropdown');
+
+    function closeNotificationStatus() {
+        notificationDropdown.classList.remove('show');
+        notificationToggle.setAttribute('aria-expanded', 'false');
+    }
+
+    notificationToggle.addEventListener('click', event => {
+        event.stopPropagation();
+        closeQuickActions();
+        const isOpen = notificationDropdown.classList.toggle('show');
+        notificationToggle.setAttribute('aria-expanded', String(isOpen));
+    });
+    notificationDropdown.addEventListener('click', event => event.stopPropagation());
+    document.addEventListener('click', closeNotificationStatus);
+    document.addEventListener('keydown', event => {
+        if (event.key === 'Escape') closeNotificationStatus();
+    });
+
     // Dark/Light Mode Switcher
     const themeToggle = document.getElementById('themeToggle');
     themeToggle.addEventListener('click', () => {
-        document.body.classList.toggle('dark-theme');
+        const isDark = document.documentElement.classList.toggle('dark-theme');
+        try {
+            localStorage.setItem('prismTheme', isDark ? 'dark' : 'light');
+        } catch (_) {}
     });
 
-    // Course filter and group-progress sorter
+    // Student directory connection and IERB monitor
     const courseFilter = document.getElementById('courseFilter');
     const progressSort = document.getElementById('progressSort');
-    const progressTableBody = document.querySelector('.data-table tbody');
+    const progressTableBody = document.getElementById('ierbMonitorBody');
+    const studentStorageKey = `prismStudents:${document.body.dataset.reminderUser || 'default'}`;
+    let monitorStudents = [];
 
-    if (courseFilter && progressSort && progressTableBody) {
-        const progressRows = () => Array.from(progressTableBody.querySelectorAll('tr[data-course]'));
-        const courses = [...new Set(progressRows().map(row => row.dataset.course).filter(Boolean))].sort();
+    const escapeMonitorHtml = value => String(value ?? '').replace(/[&<>'"]/g, char => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+    })[char]);
+    const progressRows = () => Array.from(progressTableBody.querySelectorAll('tr[data-course]'));
+    const progressNumber = value => parseFloat(String(value).replace('%', '')) || 0;
 
-        courses.forEach(course => {
+    function loadMonitorStudents() {
+        try {
+            const stored = JSON.parse(localStorage.getItem(studentStorageKey));
+            monitorStudents = Array.isArray(stored) ? stored : [];
+        } catch (_) {
+            monitorStudents = [];
+        }
+    }
+
+    function monitorGroups() {
+        const groups = new Map();
+        monitorStudents.forEach(student => {
+            const key = student.groupId || `student-${student.id}`;
+            if (!groups.has(key)) groups.set(key, { ...student, groupId: student.groupId || student.studentId, members: [] });
+            groups.get(key).members.push(student);
+        });
+        return Array.from(groups.values());
+    }
+
+    function latestReminder(student) {
+        const history = Array.isArray(student.history) ? student.history : [];
+        const reminder = history.find(entry => /follow-up|reminder/i.test(entry.message));
+        return reminder ? new Date(reminder.at).toLocaleDateString('en-PH', { month: 'short', day: 'numeric', year: 'numeric' }) : 'Not sent';
+    }
+
+    function updateMonitorMetrics(groups) {
+        const researcherCount = monitorStudents.reduce((total, student) => total + 1 + (Array.isArray(student.researchMembers) ? student.researchMembers.length : 0), 0);
+        document.getElementById('totalResearchersMetric').textContent = researcherCount;
+        document.getElementById('pendingIerbMetric').textContent = groups.filter(group => group.status === 'Pending').length;
+        document.getElementById('approvedEthicsMetric').textContent = groups.filter(group => group.stage === 'Completed').length;
+        document.getElementById('delayedSubmissionsMetric').textContent = groups.filter(group => group.status === 'Delayed').length;
+        const setCount = (id, value, noun = 'Groups') => document.getElementById(id).textContent = `${value} ${noun}`;
+        setCount('initialStageCount', groups.filter(group => group.stage === 'Stage 1').length);
+        setCount('reviewStageCount', groups.filter(group => group.stage === 'Stage 2').length);
+        setCount('revisionStageCount', groups.filter(group => ['Stage 3', 'Stage 4'].includes(group.stage)).length, 'Delayed');
+        setCount('approvedStageCount', groups.filter(group => group.stage === 'Completed').length);
+    }
+
+    function populateCourseFilter(groups) {
+        const selected = courseFilter.value;
+        courseFilter.querySelectorAll('option:not(:first-child)').forEach(option => option.remove());
+        [...new Set(groups.map(group => group.course).filter(Boolean))].sort().forEach(course => {
             const option = document.createElement('option');
             option.value = course;
             option.textContent = course;
             courseFilter.appendChild(option);
         });
-
-        const progressNumber = value => parseFloat(String(value).replace('%', '')) || 0;
-
-        function filterAndSortProgress() {
-            const selectedCourse = courseFilter.value;
-            const rows = progressRows();
-
-            rows.forEach(row => {
-                row.style.display = !selectedCourse || row.dataset.course === selectedCourse ? '' : 'none';
-            });
-
-            if (progressSort.value !== 'default') {
-                const direction = progressSort.value === 'high-to-low' ? -1 : 1;
-                rows
-                    .sort((a, b) => direction * (progressNumber(a.dataset.progress) - progressNumber(b.dataset.progress)))
-                    .forEach(row => progressTableBody.appendChild(row));
-            }
-        }
-
-        courseFilter.addEventListener('change', filterAndSortProgress);
-        progressSort.addEventListener('change', filterAndSortProgress);
+        courseFilter.value = [...courseFilter.options].some(option => option.value === selected) ? selected : '';
     }
+
+    function renderIerbMonitor() {
+        const groups = monitorGroups();
+        progressTableBody.replaceChildren();
+        updateMonitorMetrics(groups);
+        populateCourseFilter(groups);
+        if (!groups.length) {
+            const row = document.createElement('tr');
+            row.innerHTML = '<td colspan="8" class="empty-state">No IERB records available. Add a student entry to begin.</td>';
+            progressTableBody.appendChild(row);
+            return;
+        }
+        groups.forEach(group => {
+            const row = document.createElement('tr');
+            row.dataset.course = group.course || '';
+            row.dataset.progress = group.progress || '0';
+            const statusClass = String(group.status || 'Pending').toLowerCase().replace(/\s+/g, '-');
+            row.innerHTML = `
+                <td><strong>${escapeMonitorHtml(group.groupId)}</strong></td>
+                <td>${escapeMonitorHtml(group.course || 'Not set')}</td>
+                <td><div class="title-cell"><span>${escapeMonitorHtml(group.researchTitle || 'Research title not set')}</span><small>Lead: ${escapeMonitorHtml(group.name)}${(group.members.length - 1) + (Array.isArray(group.researchMembers) ? group.researchMembers.length : 0) > 0 ? ` +${(group.members.length - 1) + (Array.isArray(group.researchMembers) ? group.researchMembers.length : 0)} member(s)` : ''}</small></div></td>
+                <td><span class="stage-tag">${escapeMonitorHtml(group.stage || 'Stage 1')}</span></td>
+                <td>${escapeMonitorHtml(group.requirements || 'None')}</td>
+                <td><span class="progress-value">${escapeMonitorHtml(group.progress || '0')}%</span></td>
+                <td><span class="status-badge ${statusClass}">${escapeMonitorHtml(group.status || 'Pending')}</span><span class="email-status-text"><i class="fa-regular fa-paper-plane"></i> ${escapeMonitorHtml(latestReminder(group))}</span></td>
+                <td><button class="icon-btn" data-monitor-action="remind" title="Prepare follow-up email"><i class="fa-solid fa-paper-plane"></i></button><button class="icon-btn" data-monitor-action="summary" title="View quick summary"><i class="fa-solid fa-file-lines"></i></button></td>`;
+            row.querySelector('[data-monitor-action="remind"]').addEventListener('click', () => sendMonitorFollowup(group.groupId));
+            row.querySelector('[data-monitor-action="summary"]').addEventListener('click', () => openSummaryModal(group.groupId));
+            progressTableBody.appendChild(row);
+        });
+        filterAndSortProgress();
+    }
+
+    function filterAndSortProgress() {
+        const rows = progressRows();
+        rows.forEach(row => row.style.display = !courseFilter.value || row.dataset.course === courseFilter.value ? '' : 'none');
+        if (progressSort.value !== 'default') {
+            const direction = progressSort.value === 'high-to-low' ? -1 : 1;
+            rows.sort((a, b) => direction * (progressNumber(a.dataset.progress) - progressNumber(b.dataset.progress))).forEach(row => progressTableBody.appendChild(row));
+        }
+    }
+
+    function sendMonitorFollowup(groupId) {
+        const student = monitorStudents.find(item => (item.groupId || item.studentId) === groupId);
+        if (!student || !confirm(`Prepare an IERB follow-up email for ${student.name}?`)) return;
+        const now = new Date().toISOString();
+        student.history = Array.isArray(student.history) ? student.history : [];
+        student.history.unshift({ message: 'IERB follow-up email prepared from Progress Monitor.', at: now });
+        student.updatedAt = now;
+        try { localStorage.setItem(studentStorageKey, JSON.stringify(monitorStudents)); } catch (_) {}
+        renderIerbMonitor();
+        const subject = encodeURIComponent(`IERB Progress Follow-up - ${groupId}`);
+        const body = encodeURIComponent(`Hello ${student.name},\n\nPlease provide an update for ${student.researchTitle || 'your research project'} (${student.stage}, ${student.status}).\n\nThank you.`);
+        window.location.href = `mailto:${encodeURIComponent(student.email)}?subject=${subject}&body=${body}`;
+    }
+
+    courseFilter.addEventListener('change', filterAndSortProgress);
+    progressSort.addEventListener('change', filterAndSortProgress);
 
     // Modal Control Handlers
     function openSummaryModal(targetName) {
+        closeQuickActions();
         document.getElementById('summaryModalText').innerText = `No AI summary is available for [${targetName}] yet.`;
         document.getElementById('summaryModal').style.display = 'flex';
     }
@@ -433,14 +585,81 @@ $reminders = [];
         document.getElementById('summaryModal').style.display = 'none';
     }
     function openReportModal() {
+        closeQuickActions();
         document.getElementById('reportModal').style.display = 'flex';
     }
     function closeReportModal() {
         document.getElementById('reportModal').style.display = 'none';
     }
 
+    const reportHistoryKey = `prismAiReports:${document.body.dataset.reminderUser || 'default'}`;
+
+    function getReportHistory() {
+        try {
+            const history = JSON.parse(localStorage.getItem(reportHistoryKey));
+            return Array.isArray(history) ? history : [];
+        } catch (_) {
+            return [];
+        }
+    }
+
+    function renderReportHistory() {
+        const list = document.getElementById('recentAiReportList');
+        list.replaceChildren();
+        const history = getReportHistory().slice(0, 3);
+        if (!history.length) {
+            const empty = document.createElement('li');
+            empty.className = 'recent-report-empty';
+            empty.textContent = 'No AI reports generated yet.';
+            list.appendChild(empty);
+            return;
+        }
+
+        history.forEach(report => {
+            const item = document.createElement('li');
+            const icon = document.createElement('i');
+            icon.className = 'fa-regular fa-file-pdf';
+            const copy = document.createElement('span');
+            const title = document.createElement('strong');
+            title.textContent = report.title;
+            const date = document.createElement('small');
+            date.textContent = new Date(report.createdAt).toLocaleString('en-PH', {
+                month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit'
+            });
+            copy.append(title, date);
+            item.append(icon, copy);
+            list.appendChild(item);
+        });
+    }
+
+    function generateAIReport() {
+        const history = getReportHistory();
+        history.unshift({ title: 'AI Consolidated RPMS Report', createdAt: new Date().toISOString() });
+        try {
+            localStorage.setItem(reportHistoryKey, JSON.stringify(history.slice(0, 10)));
+        } catch (_) {}
+        closeReportModal();
+        renderReportHistory();
+        alert('Generating PDF Report...');
+    }
+
     /* CALENDAR ENGINE */
-    let currentDate = new Date(2026, 6, 28);
+    const reminderStorageKey = `prismReminders:${document.body.dataset.reminderUser || 'default'}`;
+    let dashboardReminders = {};
+
+    function loadDashboardReminders() {
+        try {
+            const stored = JSON.parse(localStorage.getItem(reminderStorageKey));
+            dashboardReminders = stored && typeof stored === 'object' ? stored : {};
+        } catch (_) {
+            dashboardReminders = {};
+        }
+    }
+
+    const dateKey = (year, month, day) =>
+        `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+
+    let currentDate = new Date();
     let currentView = 'month';
 
     const monthNames = ["January", "February", "March", "April", "May", "June", 
@@ -450,6 +669,7 @@ $reminders = [];
     const calendarDays = document.getElementById('calendarDays');
     const standardView = document.getElementById('standardCalendarView');
     const yearView = document.getElementById('yearCalendarView');
+    const dashboardReminderList = document.getElementById('dashboardReminderList');
 
     const viewMonthBtn = document.getElementById('viewMonth');
     const viewYearBtn = document.getElementById('viewYear');
@@ -507,8 +727,9 @@ $reminders = [];
         const today = new Date();
         for (let i = 1; i <= lastDate; i++) {
             let isToday = (i === today.getDate() && month === today.getMonth() && year === today.getFullYear()) ? 'active-day' : '';
-            let hasEvent = (i === 28 || i === 29 || i === 30) && month === 6 && year === 2026 ? 'has-event' : '';
-            calendarDays.innerHTML += `<div class="day ${isToday} ${hasEvent}">${i}</div>`;
+            const key = dateKey(year, month, i);
+            const hasEvent = Array.isArray(dashboardReminders[key]) && dashboardReminders[key].length ? 'has-event' : '';
+            calendarDays.innerHTML += `<button type="button" class="day ${isToday} ${hasEvent}" onclick="openDashboardDay('${key}')" title="View tasks for ${key}">${i}</button>`;
         }
 
         const totalSlots = calendarDays.children.length;
@@ -566,7 +787,182 @@ $reminders = [];
         }
     }
 
+    function renderDashboardReminders() {
+        dashboardReminderList.replaceChildren();
+        const now = new Date();
+        const todayKey = dateKey(now.getFullYear(), now.getMonth(), now.getDate());
+        const upcoming = Object.entries(dashboardReminders)
+            .filter(([key, tasks]) => key >= todayKey && Array.isArray(tasks))
+            .flatMap(([key, tasks]) => tasks.map(task => ({ ...task, date: key })))
+            .sort((a, b) => `${a.date} ${a.time || '99:99'}`.localeCompare(`${b.date} ${b.time || '99:99'}`))
+            .slice(0, 6);
+
+        if (!upcoming.length) {
+            const empty = document.createElement('li');
+            empty.className = 'reminder-empty';
+            empty.textContent = 'No upcoming task reminders.';
+            dashboardReminderList.appendChild(empty);
+            return;
+        }
+
+        upcoming.forEach(reminder => {
+            const item = document.createElement('li');
+            const link = document.createElement('button');
+            link.type = 'button';
+            link.className = 'reminder-item';
+            link.addEventListener('click', () => openDashboardDay(reminder.date));
+
+            const details = document.createElement('div');
+            details.className = 'reminder-details';
+            const title = document.createElement('strong');
+            title.textContent = reminder.title;
+            const meta = document.createElement('span');
+            const parsedDate = new Date(`${reminder.date}T00:00:00`);
+            const formattedDate = parsedDate.toLocaleDateString('en-PH', { month: 'short', day: 'numeric' });
+            meta.innerHTML = `<i class="fa-regular fa-clock"></i> ${formattedDate}${reminder.time ? ` &bull; ${reminder.time}` : ''}`;
+            details.append(title, meta);
+
+            const tag = document.createElement('span');
+            tag.className = 'reminder-tag';
+            tag.textContent = reminder.date === todayKey ? 'Today' : 'Upcoming';
+            link.append(details, tag);
+            item.appendChild(link);
+            dashboardReminderList.appendChild(item);
+        });
+    }
+
+    let dashboardSelectedDate = '';
+    const dashboardDayModal = document.getElementById('dashboardDayModal');
+    const dashboardDayTitle = document.getElementById('dashboardDayTitle');
+    const dashboardTaskForm = document.getElementById('dashboardTaskForm');
+    const dashboardTaskTitle = document.getElementById('dashboardTaskTitle');
+    const dashboardTaskTime = document.getElementById('dashboardTaskTime');
+    const dashboardTaskNotes = document.getElementById('dashboardTaskNotes');
+    const dashboardDayTasks = document.getElementById('dashboardDayTasks');
+
+    function openDashboardDay(key) {
+        dashboardSelectedDate = key;
+        dashboardDayTitle.textContent = new Date(`${key}T00:00:00`).toLocaleDateString('en-PH', {
+            weekday: 'long', month: 'long', day: 'numeric', year: 'numeric'
+        });
+        dashboardTaskForm.reset();
+        renderDashboardDayTasks();
+        dashboardDayModal.style.display = 'flex';
+        dashboardTaskTitle.focus();
+    }
+
+    function closeDashboardDay() {
+        dashboardDayModal.style.display = 'none';
+        dashboardSelectedDate = '';
+        dashboardTaskForm.reset();
+    }
+
+    function saveDashboardReminders() {
+        try {
+            localStorage.setItem(reminderStorageKey, JSON.stringify(dashboardReminders));
+        } catch (_) {}
+    }
+
+    function renderDashboardDayTasks() {
+        dashboardDayTasks.replaceChildren();
+        const tasks = Array.isArray(dashboardReminders[dashboardSelectedDate])
+            ? [...dashboardReminders[dashboardSelectedDate]].sort((a, b) => (a.time || '99:99').localeCompare(b.time || '99:99'))
+            : [];
+
+        if (!tasks.length) {
+            const empty = document.createElement('p');
+            empty.className = 'dashboard-day-empty';
+            empty.textContent = 'No tasks or notes for this date yet.';
+            dashboardDayTasks.appendChild(empty);
+            return;
+        }
+
+        tasks.forEach(task => {
+            const item = document.createElement('article');
+            const content = document.createElement('div');
+            const title = document.createElement('strong');
+            title.textContent = task.title;
+            content.appendChild(title);
+            if (task.time) {
+                const time = document.createElement('span');
+                time.innerHTML = `<i class="fa-regular fa-clock"></i> ${task.time}`;
+                content.appendChild(time);
+            }
+            if (task.notes) {
+                const notes = document.createElement('p');
+                notes.textContent = task.notes;
+                content.appendChild(notes);
+            }
+            const remove = document.createElement('button');
+            remove.type = 'button';
+            remove.title = 'Delete task';
+            remove.setAttribute('aria-label', 'Delete task');
+            remove.innerHTML = '<i class="fa-solid fa-trash"></i>';
+            remove.addEventListener('click', () => deleteDashboardTask(task.id));
+            item.append(content, remove);
+            dashboardDayTasks.appendChild(item);
+        });
+    }
+
+    function deleteDashboardTask(id) {
+        if (!confirm('Delete this reminder?')) return;
+        dashboardReminders[dashboardSelectedDate] = dashboardReminders[dashboardSelectedDate].filter(task => task.id !== id);
+        if (!dashboardReminders[dashboardSelectedDate].length) delete dashboardReminders[dashboardSelectedDate];
+        saveDashboardReminders();
+        renderDashboardDayTasks();
+        renderCalendar();
+        renderDashboardReminders();
+    }
+
+    dashboardTaskForm.addEventListener('submit', event => {
+        event.preventDefault();
+        const title = dashboardTaskTitle.value.trim();
+        if (!title || !dashboardSelectedDate) return;
+        const tasks = Array.isArray(dashboardReminders[dashboardSelectedDate]) ? dashboardReminders[dashboardSelectedDate] : [];
+        tasks.push({
+            id: `${Date.now()}-${Math.random().toString(16).slice(2)}`,
+            title,
+            time: dashboardTaskTime.value,
+            notes: dashboardTaskNotes.value.trim()
+        });
+        dashboardReminders[dashboardSelectedDate] = tasks;
+        saveDashboardReminders();
+        dashboardTaskForm.reset();
+        renderDashboardDayTasks();
+        renderCalendar();
+        renderDashboardReminders();
+        dashboardTaskTitle.focus();
+    });
+
+    dashboardDayModal.addEventListener('click', event => {
+        if (event.target === dashboardDayModal) closeDashboardDay();
+    });
+
+    loadDashboardReminders();
+    loadMonitorStudents();
+    renderIerbMonitor();
     renderCalendar();
+    renderDashboardReminders();
+    renderReportHistory();
+
+    window.addEventListener('pageshow', () => {
+        loadDashboardReminders();
+        loadMonitorStudents();
+        renderIerbMonitor();
+        renderCalendar();
+        renderDashboardReminders();
+    });
+    window.addEventListener('storage', event => {
+        if (event.key === reminderStorageKey) {
+            loadDashboardReminders();
+            renderCalendar();
+            renderDashboardReminders();
+        }
+        if (event.key === studentStorageKey) {
+            loadMonitorStudents();
+            renderIerbMonitor();
+        }
+    });
 </script>
 
 </body>
