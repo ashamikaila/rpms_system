@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Staff Login | AI Workload Assistant</title>
+    <title>Login | PRISM</title>
 
     <link rel="icon" type="image/png" href="assets/images/prismicon.png">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -21,65 +21,31 @@
     <div class="login-card">
 
         <div class="logo-container">
-            <img src="assets/images/ceu_logo2.jpg" class="logo-main">
+            <img src="assets/images/prismlogo1.png" class="logo-main" alt="PRISM logo">
         </div>
 
-        <h2>Welcome to Research Planning, Monitoring and Evaluation Section!</h2>
+        <div class="prism-branding">
+            <h1>Welcome to <span>PRISM</span>!</h1>
+            <p><strong>IERB Progress &amp; Reporting System</strong></p>
+            <p>Centro Escolar University - Malolos <span aria-hidden="true">&bull;</span> RPMS</p>
+        </div>
 
-        <p class="subtitle">
-            Centralized Web-Based AI Workload Assistant
-        </p>
-
-        <form action="login_process.php" method="POST">
-
-            <div class="input-group">
-                <i class="fa-solid fa-user"></i>
-                <input
-                    type="text"
-                    name="username"
-                    placeholder="Username"
-                    required>
-            </div>
-
-            <div class="input-group">
-                <i class="fa-solid fa-lock"></i>
-                <input
-                    type="password"
-                    name="password"
-                    id="password"
-                    placeholder="Password"
-                    required>
-
-                <span class="toggle-password">
-                    <i class="fa-solid fa-eye" id="togglePassword"></i>
-                </span>
-            </div>
-
-            <div class="form-options">
-                <div></div>
-                <!-- Routes link through loading.php -->
-                <a href="loading.php?redirect=forgot_password.php">
-                    Forgot Password?
-                </a>
-            </div>
-
-            <button type="submit">
-                LOGIN
-            </button>
-
-            <div class="register-text">
-                Don't have an account?
-                <!-- Routes link through loading.php -->
-                <a href="loading.php?redirect=register.php">Register</a>
-            </div>
-
-        </form>
+        <nav class="role-selector" aria-label="Select account type">
+            <p>Choose your account type</p>
+            <a class="role-option" href="login_students.php">
+                Student
+            </a>
+            <a class="role-option" href="login_faculty.php">
+                Faculty
+            </a>
+            <a class="role-option" href="login_admin.php">
+                Admin
+            </a>
+        </nav>
 
     </div>
 
 </div>
-
-<script src="assets/js/script.js"></script>
 
 </body>
 </html>

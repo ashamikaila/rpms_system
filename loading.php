@@ -22,7 +22,13 @@
 
     <div class="loading-card">
 
-        <img src="assets/images/ceu_logo2.jpg" class="loading-logo">
+        <img src="assets/images/prismlogo1.png" class="loading-logo" alt="PRISM logo">
+
+        <div class="prism-branding">
+            <h1>Welcome to <span>PRISM</span>!</h1>
+            <p><strong>IERB Progress &amp; Reporting System</strong></p>
+            <p>Centro Escolar University - Malolos <span aria-hidden="true">&bull;</span> RPMS</p>
+        </div>
 
         <div class="loading-bar">
 

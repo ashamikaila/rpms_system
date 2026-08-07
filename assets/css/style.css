@@ -46,6 +46,30 @@ body{
 
 .logo-main{
     width:220px;
+    margin-bottom:-58px;
+}
+
+.prism-branding{
+    margin:0 0 24px;
+    color:#222;
+    text-align:center;
+}
+
+.prism-branding h1{
+    margin:0 0 7px;
+    font-size:22px;
+    font-weight:700;
+}
+
+.prism-branding p{
+    margin:3px 0;
+    font-size:13px;
+    line-height:1.4;
+}
+
+.prism-branding strong{
+    color:#3F447F;
+    font-size:14px;
 }
 
 .login-card h2{
@@ -143,6 +167,79 @@ button{
 
 button:hover{
     background:#F65296;
+}
+
+.login-card button{
+    height:54px;
+}
+
+.role-selector{
+    display:grid;
+    grid-template-columns:1fr;
+    justify-items:center;
+    gap:10px;
+    margin:0 0 14px;
+}
+
+.role-selector > p{
+    width:100%;
+    margin-bottom:2px;
+    color:#555;
+    font-size:13px;
+    font-weight:600;
+    text-align:center;
+}
+
+.role-option{
+    display:flex;
+    width:76%;
+    min-height:44px;
+    align-items:center;
+    justify-content:center;
+    padding:10px 14px;
+    border:1px solid #dedee8;
+    border-radius:14px;
+    color:#333;
+    background:#f7f7f9;
+    font-size:14px;
+    font-weight:700;
+    text-align:center;
+    text-decoration:none;
+    transition:.2s ease;
+}
+
+.role-option:hover,
+.role-option:focus-visible{
+    border-color:#F65296;
+    background:rgba(246,82,150,.09);
+    transform:translateX(3px);
+}
+
+.role-option:focus-visible{
+    outline:2px solid #3F447F;
+    outline-offset:2px;
+}
+
+.role-login-heading{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    margin-bottom:15px !important;
+    color:#3F447F;
+}
+
+.back-to-roles{
+    display:inline-block;
+    margin-top:15px;
+    color:#666;
+    font-size:11px;
+    font-weight:600;
+    text-decoration:none;
+}
+
+.back-to-roles:hover{
+    color:#F65296;
 }
 
 .footer{
@@ -375,6 +472,7 @@ button:hover{
 
 .logo-main{
     width:220px;
+    margin-bottom:-58px;
 }
 
 .success-message{
@@ -401,8 +499,12 @@ button:hover{
 .loading-logo{
 
     width:240px;
-    margin-bottom:35px;
+    margin-bottom:-55px;
 
+}
+
+.loading-card .prism-branding{
+    margin-bottom:28px;
 }
 
 .loading-bar{
@@ -423,6 +525,101 @@ button:hover{
     background:linear-gradient(90deg,#3F447F,#F65296);
     animation:loading 3s linear forwards;
 
+}
+
+/* Compact authentication and loading cards */
+.login-card,
+.register-card,
+.forgot-card{
+    width:390px;
+    padding:24px 28px;
+}
+
+.loading-card{
+    width:380px;
+    padding:28px 32px;
+}
+
+.logo-container{
+    margin-bottom:6px;
+}
+
+.logo-main{
+    width:190px;
+    margin-top:-48px;
+    margin-bottom:-50px;
+}
+
+.loading-logo{
+    width:205px;
+    margin-top:-50px;
+    margin-bottom:-48px;
+}
+
+.prism-branding{
+    margin-bottom:16px;
+}
+
+.prism-branding h1{
+    margin-bottom:4px;
+    font-size:18px;
+}
+
+.prism-branding h1 span{
+    color:#F65296;
+}
+
+.prism-branding p{
+    margin:2px 0;
+    line-height:1.3;
+}
+
+.input-group,
+.register-card .input-group{
+    margin-bottom:12px;
+}
+
+.input-group input,
+.register-card .input-group input{
+    height:48px;
+}
+
+.register-card .subtitle,
+.forgot-card .subtitle{
+    margin-bottom:18px;
+}
+
+.register-card form{
+    margin-top:4px;
+}
+
+.forgot-card h2{
+    margin-top:4px;
+    font-size:24px;
+}
+
+.loading-card .prism-branding{
+    margin-bottom:20px;
+}
+
+@media(max-width:480px){
+    .login-card,
+    .register-card,
+    .forgot-card,
+    .loading-card{
+        width:100%;
+        padding:22px;
+    }
+
+    .logo-main{
+        width:175px;
+        margin-top:-44px;
+        margin-bottom:-46px;
+    }
+
+    .loading-logo{
+        margin-top:-46px;
+    }
 }
 
 @keyframes loading{

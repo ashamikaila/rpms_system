@@ -25,8 +25,14 @@
 
         <div class="logo-container">
 
-            <img src="assets/images/ceu_logo2.jpg" class="logo-main">
+            <img src="assets/images/prismlogo1.png" class="logo-main" alt="PRISM logo">
 
+        </div>
+
+        <div class="prism-branding">
+            <h1>Welcome to <span>PRISM</span>!</h1>
+            <p><strong>IERB Progress &amp; Reporting System</strong></p>
+            <p>Centro Escolar University - Malolos <span aria-hidden="true">&bull;</span> RPMS</p>
         </div>
 
         <h2>Forgot Password?</h2>
