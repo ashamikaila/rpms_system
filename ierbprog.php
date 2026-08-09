@@ -27,9 +27,12 @@ $profile_img = 'assets/images/ceu_logo1.jpg';
         </div>
         <ul class="nav-links">
             <li><a href="dashboard.php"><i class="fa-solid fa-chart-line"></i><span>Dashboard</span></a></li>
-            <li><a href="student.php"><i class="fa-solid fa-user-graduate"></i><span>Students</span></a></li>
+            <li><a href="admin_students.php"><i class="fa-solid fa-user-graduate"></i><span>Students</span></a></li>
+            <li><a href="admin_faculty.php"><i class="fa-solid fa-chalkboard-user"></i><span>Faculty</span></a></li>
             <li class="active"><a href="ierbprog.php"><i class="fa-solid fa-file-signature"></i><span>IERB Progress</span></a></li>
             <li><a href="documents.php"><i class="fa-solid fa-folder-open"></i><span>Documents</span></a></li>
+            <li><a href="admin_notifications.php"><i class="fa-solid fa-bell"></i><span>Notifications</span></a></li>
+            <li><a href="admin_ai.php"><i class="fa-solid fa-wand-magic-sparkles"></i><span>AI</span></a></li>
             <li><a href="reports.php"><i class="fa-solid fa-file-pdf"></i><span>Reports</span></a></li>
             <li><a href="calendar.php"><i class="fa-solid fa-calendar-days"></i><span>Calendar</span></a></li>
         </ul>

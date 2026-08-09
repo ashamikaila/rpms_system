@@ -29,12 +29,6 @@
 
         </div>
 
-        <div class="prism-branding">
-            <h1>Welcome to <span>PRISM</span>!</h1>
-            <p><strong>IERB Progress &amp; Reporting System</strong></p>
-            <p>Centro Escolar University - Malolos <span aria-hidden="true">&bull;</span> RPMS</p>
-        </div>
-
         <h2>Forgot Password?</h2>
 
         <p class="subtitle">

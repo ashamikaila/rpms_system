@@ -23,14 +23,9 @@ if (!isset($accountType, $accountLabel)) {
         </div>
 
         <div class="prism-branding">
-            <h1>Welcome to <span>PRISM</span>!</h1>
-            <p><strong>IERB Progress &amp; Reporting System</strong></p>
-            <p>Centro Escolar University - Malolos <span aria-hidden="true">&bull;</span> RPMS</p>
+            <h1>Welcome Back!</h1>
+            <p>Please enter your details to login.</p>
         </div>
-
-        <h2 class="role-login-heading">
-            <?php echo htmlspecialchars($accountLabel, ENT_QUOTES, 'UTF-8'); ?> Login
-        </h2>
 
         <form action="login_process.php" method="POST">
             <input type="hidden" name="account_type" value="<?php echo htmlspecialchars($accountType, ENT_QUOTES, 'UTF-8'); ?>">
@@ -47,7 +42,7 @@ if (!isset($accountType, $accountLabel)) {
             </div>
 
             <div class="form-options">
-                <a href="loading.php?redirect=forgot_password.php">Forgot Password?</a>
+                <a href="forgot_password.php">Forgot Password?</a>
             </div>
 
             <button type="submit">LOGIN</button>

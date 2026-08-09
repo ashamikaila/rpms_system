@@ -93,12 +93,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     <button class="ierb-action" data-action="complete" title="Mark stage complete" aria-label="Mark stage complete"><i class="fa-solid fa-check-double"></i></button>
                     <button class="ierb-action" data-action="requirement" title="Flag requirement" aria-label="Flag requirement"><i class="fa-solid fa-flag"></i></button>
                     <button class="ierb-action" data-action="note" title="Add internal note" aria-label="Add internal note"><i class="fa-solid fa-note-sticky"></i></button>
+                    <button class="ierb-action" data-action="deadline" title="Set deadline" aria-label="Set deadline"><i class="fa-solid fa-calendar-plus"></i></button>
+                    <button class="ierb-action" data-action="status" title="Update official stage and status" aria-label="Update official stage and status"><i class="fa-solid fa-pen-to-square"></i></button>
                     <button class="ierb-action" data-action="followup" title="Send follow-up" aria-label="Send follow-up"><i class="fa-solid fa-paper-plane"></i></button>
                     <button class="ierb-action delete" data-action="delete" title="Delete IERB record" aria-label="Delete IERB record"><i class="fa-solid fa-trash"></i></button>
                 </div></td>`;
             row.querySelector('[data-action="complete"]').addEventListener('click', () => completeStage(student.id));
             row.querySelector('[data-action="requirement"]').addEventListener('click', () => openAction(student.id, 'requirement'));
             row.querySelector('[data-action="note"]').addEventListener('click', () => openAction(student.id, 'note'));
+            row.querySelector('[data-action="deadline"]').addEventListener('click', () => openAction(student.id, 'deadline'));
+            row.querySelector('[data-action="status"]').addEventListener('click', () => updateOfficialStatus(student.id));
             row.querySelector('[data-action="followup"]').addEventListener('click', () => sendFollowup(student.id));
             row.querySelector('[data-action="delete"]').addEventListener('click', () => deleteIerbRecord(student.id));
             tableBody.appendChild(row);
@@ -182,12 +186,12 @@ document.addEventListener('DOMContentLoaded', () => {
     function openAction(id, mode) {
         const student = students.find(item => item.id === id); if (!student) return;
         actionStudentId = id; actionMode = mode;
-        const requirement = mode === 'requirement';
-        document.getElementById('ierbActionEyebrow').textContent = requirement ? 'Missing document' : 'RPMS internal record';
-        document.getElementById('ierbActionTitle').textContent = requirement ? 'Flag Requirement' : 'Add Internal Note';
-        document.getElementById('ierbActionLabel').textContent = requirement ? 'Pending requirement' : 'Internal comment';
-        actionText.placeholder = requirement ? 'e.g. Missing Ethics Consent Form' : 'Write an internal note for RPMS staff...';
-        actionText.value = requirement ? (student.requirements || '') : '';
+        const requirement = mode === 'requirement', deadline = mode === 'deadline';
+        document.getElementById('ierbActionEyebrow').textContent = requirement ? 'Missing document' : deadline ? 'Official schedule' : 'RPMS internal record';
+        document.getElementById('ierbActionTitle').textContent = requirement ? 'Flag Requirement' : deadline ? 'Set Deadline' : 'Add Internal Note';
+        document.getElementById('ierbActionLabel').textContent = requirement ? 'Pending requirement' : deadline ? 'Deadline (YYYY-MM-DD)' : 'Internal comment';
+        actionText.placeholder = requirement ? 'e.g. Missing Ethics Consent Form' : deadline ? 'e.g. 2026-10-24' : 'Write an internal note for RPMS staff...';
+        actionText.value = requirement ? (student.requirements || '') : deadline ? (student.deadline || '') : '';
         modal.classList.add('show'); modal.setAttribute('aria-hidden', 'false'); actionText.focus();
     }
 
@@ -201,6 +205,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if (actionMode === 'requirement') {
             student.requirements = text; student.status = 'Pending';
             addHistory(student, `Requirement flagged: ${text}`);
+        } else if (actionMode === 'deadline') {
+            if (!/^\d{4}-\d{2}-\d{2}$/.test(text)) { alert('Enter the deadline as YYYY-MM-DD.'); return; }
+            student.deadline = text;
+            addHistory(student, `Official deadline set to ${text}.`);
         } else {
             student.notes = Array.isArray(student.notes) ? student.notes : [];
             student.notes.unshift({ text, at: new Date().toISOString() });
@@ -208,6 +216,17 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         save(); closeAction(); render();
     });
+
+    function updateOfficialStatus(id) {
+        const student = students.find(item => item.id === id); if (!student) return;
+        const stage = prompt('Official stage (Stage 1–Stage 5 or Completed):', student.stage || 'Stage 1');
+        if (stage === null || !stages.includes(stage.trim())) { if (stage !== null) alert('Enter a valid official stage.'); return; }
+        const status = prompt('Official status (On Track, Pending, or Delayed):', student.status || 'Pending');
+        if (status === null || !['On Track','Pending','Delayed'].includes(status.trim())) { if (status !== null) alert('Enter a valid official status.'); return; }
+        student.stage = stage.trim(); student.status = status.trim();
+        const index = stages.indexOf(student.stage); student.progress = student.stage === 'Completed' ? '100' : String(Math.round((index / 5) * 100));
+        addHistory(student, `Official IERB update: ${student.stage} — ${student.status}.`); save(); render();
+    }
 
     async function sendFollowup(id) {
         const student = students.find(item => item.id === id); if (!student) return;

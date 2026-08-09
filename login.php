@@ -31,7 +31,7 @@
         </div>
 
         <nav class="role-selector" aria-label="Select account type">
-            <p>Choose your account type</p>
+            <p>Login As:</p>
             <a class="role-option" href="login_students.php">
                 Student
             </a>

@@ -20,12 +20,13 @@ if($action==='upload'){
  if(!in_array($ext,$allowed,true)){http_response_code(415);echo json_encode(['ok'=>false,'message'=>'This file type is not allowed.']);exit;}
  $id=bin2hex(random_bytes(12));$stored=$id.'.'.$ext;$target=$base.DIRECTORY_SEPARATOR.$stored;
  if(!move_uploaded_file($file['tmp_name'],$target)){http_response_code(500);echo json_encode(['ok'=>false,'message'=>'The uploaded file could not be stored.']);exit;}
- $doc=['id'=>$id,'originalName'=>basename($file['name']),'storedName'=>$stored,'size'=>(int)$file['size'],'mime'=>(new finfo(FILEINFO_MIME_TYPE))->file($target),'uploadedBy'=>$userName,'uploadedAt'=>date(DATE_ATOM),'student'=>trim($_POST['student']??''),'documentType'=>trim($_POST['documentType']??'Other'),'stage'=>trim($_POST['stage']??'Stage 1')];
+ $doc=['id'=>$id,'originalName'=>basename($file['name']),'storedName'=>$stored,'size'=>(int)$file['size'],'mime'=>(new finfo(FILEINFO_MIME_TYPE))->file($target),'uploadedBy'=>$userName,'uploadedAt'=>date(DATE_ATOM),'student'=>trim($_POST['student']??''),'documentType'=>trim($_POST['documentType']??'Other'),'stage'=>trim($_POST['stage']??'Stage 1'),'reviewStatus'=>'Submitted','reviewRemarks'=>''];
  array_unshift($docs,$doc);if(!writeIndex($indexFile,$docs)){@unlink($target);http_response_code(500);echo json_encode(['ok'=>false,'message'=>'Document metadata could not be saved.']);exit;}echo json_encode(['ok'=>true,'document'=>$doc]);exit;
 }
 $payload=inputJson();$id=$_GET['id']??$payload['id']??'';$doc=findDoc($docs,$id);
 if(!$doc){http_response_code(404);echo json_encode(['ok'=>false,'message'=>'Document not found.']);exit;}$path=$base.DIRECTORY_SEPARATOR.basename($doc['storedName']);
 if($action==='file'){header_remove('Content-Type');header('Content-Type: '.$doc['mime']);header('Content-Length: '.filesize($path));header('Content-Disposition: '.(($_GET['download']??'')==='1'?'attachment':'inline').'; filename="'.str_replace('"','',$doc['originalName']).'"');readfile($path);exit;}
+if($action==='review'){$allowed=['Under Review','Received','Verified','Resubmission Requested'];$status=trim($payload['status']??'');if(!in_array($status,$allowed,true)){http_response_code(422);echo json_encode(['ok'=>false,'message'=>'Invalid review status.']);exit;}foreach($docs as &$item){if($item['id']===$id){$item['reviewStatus']=$status;$item['reviewRemarks']=trim($payload['remarks']??'');$item['reviewedAt']=date(DATE_ATOM);$item['reviewedBy']=$userName;break;}}unset($item);if(!writeIndex($indexFile,$docs)){http_response_code(500);echo json_encode(['ok'=>false,'message'=>'Review could not be saved.']);exit;}echo json_encode(['ok'=>true]);exit;}
 if($action==='delete'){if(is_file($path))@unlink($path);$docs=array_values(array_filter($docs,fn($item)=>$item['id']!==$id));writeIndex($indexFile,$docs);echo json_encode(['ok'=>true]);exit;}
 if($action==='summarize'){
  $text='';$ext=strtolower(pathinfo($path,PATHINFO_EXTENSION));

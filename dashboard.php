@@ -66,10 +66,13 @@ $reminders = [];
                 </a>
             </li>
             <li>
-                <a href="student.php">
+                <a href="admin_students.php">
                     <i class="fa-solid fa-user-graduate"></i>
                     <span>Students</span>
                 </a>
+            </li>
+            <li>
+                <a href="admin_faculty.php"><i class="fa-solid fa-chalkboard-user"></i><span>Faculty</span></a>
             </li>
             <li>
                 <a href="ierbprog.php">
@@ -89,6 +92,8 @@ $reminders = [];
                     <span>Reports</span>
                 </a>
             </li>
+            <li><a href="admin_notifications.php"><i class="fa-solid fa-bell"></i><span>Notifications</span></a></li>
+            <li><a href="admin_ai.php"><i class="fa-solid fa-wand-magic-sparkles"></i><span>AI</span></a></li>
             <li>
                 <a href="calendar.php">
                     <i class="fa-solid fa-calendar-days"></i>

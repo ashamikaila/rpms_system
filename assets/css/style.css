@@ -567,6 +567,10 @@ button:hover{
 
 .prism-branding h1 span{
     color:#F65296;
+    background:linear-gradient(90deg,#3F447F,#F65296);
+    -webkit-background-clip:text;
+    background-clip:text;
+    -webkit-text-fill-color:transparent;
 }
 
 .prism-branding p{
