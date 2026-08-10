@@ -4,7 +4,7 @@ session_start();
 $user_name = isset($_SESSION['user_name']) ? $_SESSION['user_name'] : 'CEU RPMS';
 $user_email = isset($_SESSION['user_email']) ? $_SESSION['user_email'] : 'rpms@ceu.edu.ph';
 $user_role = isset($_SESSION['user_role']) ? $_SESSION['user_role'] : 'RPMS Administrator';
-$profile_img = 'assets/images/ceu_logo1.jpg';
+$profile_img = 'assets/images/default-avatar.svg';
 
 date_default_timezone_set('Asia/Manila');
 $current_hour = (int)date('H');
