@@ -6,7 +6,7 @@
     }
     .today-button {
         padding: 10px 18px; border-radius: 10px; color: #fff; font-weight: 600;
-        background: linear-gradient(90deg, #F65296, #A21368);
+        background: linear-gradient(90deg, #ee1280, #0c0e3f);
     }
     .calendar-layout {
         display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(300px, .75fr);
@@ -31,15 +31,15 @@
         background: var(--card-bg); border: 0; border-right: 1px solid var(--border-color);
         border-bottom: 1px solid var(--border-color); text-align: left; cursor: pointer;
     }
-    .calendar-day:hover, .calendar-day.selected { background: rgba(246, 82, 150, .08); }
-    .calendar-day.selected { box-shadow: inset 0 0 0 2px #F65296; }
+    .calendar-day:hover, .calendar-day.selected { background: rgba(238, 18, 128, .08); }
+    .calendar-day.selected { box-shadow: inset 0 0 0 2px #ee1280; }
     .calendar-day.outside { color: var(--text-secondary); opacity: .48; }
     .day-number { display: inline-grid; place-items: center; width: 28px; height: 28px; font-size: 12px; font-weight: 600; }
-    .calendar-day.today .day-number { color: #fff; background: #A21368; border-radius: 50%; }
+    .calendar-day.today .day-number { color: #fff; background: #0c0e3f; border-radius: 50%; }
     .day-tasks { margin-top: 6px; display: grid; gap: 4px; }
     .day-task {
         overflow: hidden; padding: 5px 7px; border-radius: 6px; white-space: nowrap;
-        text-overflow: ellipsis; background: rgba(162, 19, 104, .12); color: var(--accent-purple);
+        text-overflow: ellipsis; background: rgba(12, 14, 63, .12); color: var(--accent-purple);
         font-size: 9px; font-weight: 600;
     }
     html.dark-theme .day-task { color: #ff84b9; }
@@ -56,14 +56,14 @@
         width: 100%; padding: 11px 12px; border: 1px solid var(--border-color); border-radius: 9px;
         color: var(--text-primary); background: var(--input-bg); font: inherit; font-size: 11px; resize: vertical;
     }
-    #reminderForm input:focus, #reminderForm textarea:focus { outline: 2px solid rgba(246, 82, 150, .25); border-color: #F65296; }
+    #reminderForm input:focus, #reminderForm textarea:focus { outline: 2px solid rgba(238, 18, 128, .25); border-color: #ee1280; }
     .form-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 7px; }
     .save-task, .cancel-edit { padding: 10px 13px; border-radius: 9px; font-weight: 600; font-size: 10px; }
-    .save-task { color: #fff; background: linear-gradient(90deg, #F65296, #A21368); }
+    .save-task { color: #fff; background: linear-gradient(90deg, #ee1280, #0c0e3f); }
     .save-task i { margin-right: 6px; }
     .cancel-edit { color: var(--text-secondary); background: var(--bg-color); }
     .task-list { display: grid; gap: 10px; padding-top: 18px; }
-    .task-item { padding: 13px; border: 1px solid var(--border-color); border-left: 3px solid #F65296; border-radius: 10px; }
+    .task-item { padding: 13px; border: 1px solid var(--border-color); border-left: 3px solid #ee1280; border-radius: 10px; }
     .task-item-head { display: flex; justify-content: space-between; gap: 8px; }
     .task-item h3 { font-size: 11px; color: var(--text-primary); overflow-wrap: anywhere; }
     .task-time { margin-top: 5px; color: var(--accent-pink); font-size: 9px; font-weight: 600; }

@@ -1,4 +1,3 @@
 <?php
-$accountType = 'admin';
-$accountLabel = 'Admin';
-require __DIR__ . '/role_login_template.php';
+header('Location: login.php', true, 302);
+exit;

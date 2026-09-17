@@ -1,7 +1,7 @@
 <?php
 if (session_status() !== PHP_SESSION_ACTIVE) session_start();
 
-$portalRole = isset($portalRole) && in_array($portalRole, ['Student', 'Faculty'], true) ? $portalRole : 'Student';
+$portalRole = isset($portalRole) && in_array($portalRole, ['Student', 'Research Adviser'], true) ? $portalRole : 'Student';
 $userName = $_SESSION['user_name'] ?? $portalRole . ' User';
 $userEmail = $_SESSION['user_email'] ?? strtolower($portalRole) . '@ceu.edu.ph';
 $userId = $_SESSION['user_id'] ?? $_SESSION['username'] ?? $userEmail;

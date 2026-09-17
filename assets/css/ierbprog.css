@@ -9,7 +9,7 @@
 .stage-chart { display: grid; grid-template-columns: repeat(6, minmax(58px, 1fr)); gap: 14px; height: 190px; margin-top: 18px; padding-top: 10px; border-bottom: 1px solid var(--border-color); }
 .stage-column { display: grid; grid-template-rows: 1fr auto; min-width: 0; }
 .stage-bar-area { display: flex; align-items: flex-end; justify-content: center; height: 145px; }
-.stage-bar { position: relative; width: min(42px, 72%); min-height: 4px; border-radius: 5px 5px 0 0; background: linear-gradient(180deg, #F65296, #A21368); transition: height .25s ease; }
+.stage-bar { position: relative; width: min(42px, 72%); min-height: 4px; border-radius: 5px 5px 0 0; background: linear-gradient(180deg, #ee1280, #0c0e3f); transition: height .25s ease; }
 .stage-bar strong { position: absolute; top: -20px; left: 50%; transform: translateX(-50%); color: var(--text-primary); font-size: 10px; }
 .stage-column > span { padding: 8px 2px 0; color: var(--text-secondary); font-size: 8px; font-weight: 600; text-align: center; }
 .ierb-controls { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 22px 0; }
@@ -29,7 +29,7 @@
 .ierb-table td { padding: 12px; border-top: 1px solid var(--border-color); color: var(--text-primary); font-size: 9px; vertical-align: middle; }
 .student-cell strong, .student-cell span { display: block; }
 .student-cell span { margin-top: 3px; color: var(--text-secondary); font-size: 8px; }
-.current-stage { padding: 5px 8px; border-radius: 12px; color: var(--accent-purple); background: rgba(162,19,104,.1); font-weight: 700; }
+.current-stage { padding: 5px 8px; border-radius: 12px; color: var(--accent-purple); background: rgba(12, 14, 63,.1); font-weight: 700; }
 html.dark-theme .current-stage { color: #ff9dc7; }
 .completed-stages { display: flex; gap: 4px; }
 .stage-check { display: grid; place-items: center; width: 20px; height: 20px; border: 1px solid var(--border-color); border-radius: 50%; color: var(--text-secondary); font-size: 7px; }

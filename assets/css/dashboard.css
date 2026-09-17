@@ -1,11 +1,11 @@
 :root {
     --bg-color: #f5f7fb;
     --card-bg: #ffffff;
-    --text-primary: #3F447F;
+    --text-primary: #0c0e3f;
     --text-secondary: #666666;
-    --sidebar-bg: linear-gradient(180deg, #A21368 0%, #3F447F 100%);
-    --accent-pink: #F65296;
-    --accent-purple: #A21368;
+    --sidebar-bg: linear-gradient(180deg, #ee1280 0%, #0c0e3f 100%);
+    --accent-pink: #ee1280;
+    --accent-purple: #0c0e3f;
     --border-color: #eeeeee;
     --input-bg: #ffffff;
     --shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
@@ -148,8 +148,8 @@ body {
 
 .sidebar ul li a:hover,
 .sidebar ul li.active a {
-    background: linear-gradient(90deg, #F65296 0%, #A21368 100%);
-    box-shadow: 0 4px 12px rgba(246, 82, 150, 0.3);
+    background: linear-gradient(90deg, #ee1280 0%, #0c0e3f 100%);
+    box-shadow: 0 4px 12px rgba(238, 18, 128, 0.3);
 }
 
 /* Sidebar Bottom (Help, Profile & Logout) */
@@ -282,9 +282,40 @@ html.dark-theme .profile-menu hr {
    MAIN CONTENT AREA
    ========================================== */
 .main-content {
+    --watermark-left: 270px;
+    --watermark-top: 0px;
     margin-left: 270px;
     width: calc(100% - 270px);
     padding: 30px 35px;
+}
+
+/* Keep the seal centered in the visible workspace, including while scrolling.
+   A faint, non-interactive overlay keeps it visible over solid dashboard cards. */
+.main-content::after {
+    content: "";
+    position: fixed;
+    inset: var(--watermark-top) 0 0 var(--watermark-left);
+    z-index: 90;
+    background: url('../images/CEU_LOGO_NEW.png') center / min(48vw, 440px) auto no-repeat;
+    opacity: 0.045;
+    pointer-events: none;
+}
+
+html.dark-theme .main-content::after {
+    opacity: 0.065;
+}
+
+@media (max-width: 768px) {
+    .main-content { --watermark-left: 80px; }
+}
+
+.main-content.portal-main {
+    --watermark-left: 0px;
+    --watermark-top: 110px;
+}
+
+@media (max-width: 1120px) {
+    .main-content.portal-main { --watermark-top: 162px; }
 }
 
 /* --- TOPBAR --- */
@@ -386,7 +417,7 @@ html.dark-theme .theme-toggle .dark-icon {
     right: 10px;
     width: 8px;
     height: 8px;
-    background: #F65296;
+    background: #ee1280;
     border-radius: 50%;
 }
 
@@ -418,7 +449,7 @@ html.dark-theme .theme-toggle .dark-icon {
 
 /* --- AI SUMMARY BANNER --- */
 .ai-summary-banner {
-    background: linear-gradient(135deg, #3F447F 0%, #A21368 100%);
+    background: linear-gradient(135deg, #0c0e3f 0%, #0c0e3f 100%);
     color: #ffffff;
     border-radius: 20px;
     padding: 22px 28px;
@@ -426,7 +457,7 @@ html.dark-theme .theme-toggle .dark-icon {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 25px;
-    box-shadow: 0 10px 25px rgba(162, 19, 104, 0.25);
+    box-shadow: 0 10px 25px rgba(12, 14, 63, 0.25);
 }
 
 .ai-badge {
@@ -457,7 +488,7 @@ html.dark-theme .theme-toggle .dark-icon {
 
 .ai-action-btn {
     background: #ffffff;
-    color: #A21368;
+    color: #0c0e3f;
     border: none;
     padding: 12px 20px;
     border-radius: 12px;
@@ -472,7 +503,7 @@ html.dark-theme .theme-toggle .dark-icon {
 }
 
 .ai-action-btn:hover {
-    background: #F65296;
+    background: #ee1280;
     color: #ffffff;
 }
 
@@ -634,7 +665,7 @@ html.dark-theme .theme-toggle .dark-icon {
 }
 
 .quick-action:hover {
-    border-color: rgba(246, 82, 150, .55);
+    border-color: rgba(238, 18, 128, .55);
     background: var(--input-bg);
 }
 
@@ -798,7 +829,7 @@ html.dark-theme .theme-toggle .dark-icon {
 }
 
 .stage-tag {
-    background: rgba(162, 19, 104, 0.08);
+    background: rgba(12, 14, 63, 0.08);
     color: var(--accent-purple);
     padding: 4px 8px;
     border-radius: 6px;
@@ -1020,7 +1051,7 @@ html.dark-theme .theme-toggle .dark-icon {
 .dashboard-day-empty { padding: 15px; color: var(--text-secondary); font-size: 9px; text-align: center; }
 
 .day:hover {
-    background: rgba(162, 19, 104, 0.1);
+    background: rgba(12, 14, 63, 0.1);
     cursor: pointer;
 }
 
@@ -1193,9 +1224,9 @@ html.dark-theme .theme-toggle .dark-icon {
 }
 
 .cal-nav-btn:hover {
-    background: #F65296;
+    background: #ee1280;
     color: #fff;
-    border-color: #F65296;
+    border-color: #ee1280;
 }
 
 .cal-view-selector {
@@ -1219,7 +1250,7 @@ html.dark-theme .theme-toggle .dark-icon {
 }
 
 .view-btn.active {
-    background: #F65296;
+    background: #ee1280;
     color: #fff;
 }
 
@@ -1242,8 +1273,8 @@ html.dark-theme .theme-toggle .dark-icon {
 }
 
 .year-month-card:hover {
-    border-color: #F65296;
-    background: rgba(246, 82, 150, 0.08);
+    border-color: #ee1280;
+    background: rgba(238, 18, 128, 0.08);
 }
 
 .month-title {
@@ -1321,7 +1352,7 @@ html.dark-theme .theme-toggle .dark-icon {
         }
 
         .year-month-card .mini-day.active-day {
-            background-color: #F65296;
+            background-color: #ee1280;
         }
 
         html.dark-theme .year-month-card {

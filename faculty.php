@@ -1,4 +1,3 @@
 <?php
-$portalRole = 'Faculty';
-require __DIR__ . '/role_portal.php';
-
+header('Location: research_adviser.php', true, 302);
+exit;
