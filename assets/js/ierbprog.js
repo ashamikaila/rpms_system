@@ -9,6 +9,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const search = document.getElementById('ierbSearch');
     const stageFilter = document.getElementById('stageFilter');
     const statusFilter = document.getElementById('ierbStatusFilter');
+    const pendingView = new URLSearchParams(window.location.search).get('view') === 'pending';
+    if (pendingView) {
+        document.querySelector('.ierb-heading h1').textContent = 'Pending Requirements';
+        document.querySelector('.ierb-heading p').textContent = 'Review records with outstanding IERB requirements.';
+        document.getElementById('ierbTableTitle').textContent = 'Outstanding Requirements';
+    }
     const modal = document.getElementById('ierbActionModal');
     const entryModal = document.getElementById('ierbEntryModal');
     const entryForm = document.getElementById('ierbEntryForm');
@@ -30,6 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function filteredStudents() {
         const query = search.value.trim().toLowerCase();
         return students.filter(student => {
+            if (pendingView && !String(student.requirements || '').trim()) return false;
             const haystack = `${student.name} ${student.studentId} ${student.groupId || ''} ${student.researchTitle || ''}`.toLowerCase();
             return (!query || haystack.includes(query)) && (!stageFilter.value || student.stage === stageFilter.value) && (!statusFilter.value || student.status === statusFilter.value);
         });

@@ -1,0 +1,184 @@
+/* Click to switch between full navigation and a compact icon rail. */
+.dashboard-sidebar .sidebar-collapse-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    align-self: flex-end;
+    flex-shrink: 0;
+    width: 30px;
+    height: 30px;
+    margin: 0 14px 2px;
+    border: 1px solid rgba(255, 255, 255, 0.32);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff;
+    cursor: pointer;
+}
+.dashboard-sidebar .sidebar-collapse-toggle:hover { background: rgba(255, 255, 255, 0.24); }
+.dashboard-sidebar {
+    width: 230px;
+    inset: 16px auto 16px 16px;
+    border: 1px solid rgba(255, 255, 255, 0.42);
+    border-radius: 26px;
+    background:
+        radial-gradient(ellipse at top left, rgba(255, 255, 255, 0.10), transparent 58%),
+        linear-gradient(165deg, rgba(238, 18, 128, 0.96) 0%, rgba(137, 20, 95, 0.96) 42%, rgba(12, 14, 63, 0.97) 100%);
+    -webkit-backdrop-filter: blur(22px) saturate(125%);
+    backdrop-filter: blur(22px) saturate(125%);
+    color: #ffffff;
+    box-shadow: 0 16px 40px rgba(37, 20, 65, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.48), inset 1px 0 0 rgba(255, 255, 255, 0.16);
+    padding: 12px 0;
+}
+.dashboard-sidebar ~ .main-content {
+    --watermark-left: 262px;
+    margin-left: 262px;
+    width: calc(100% - 262px);
+    min-width: 0;
+}
+.dashboard-sidebar .sidebar-header { padding: 2px 16px 4px; flex-shrink: 0; }
+.dashboard-sidebar .sidebar-header img.sidebar-brand-logo {
+    width: 170px;
+    height: 80px;
+    margin: 0 auto;
+    object-fit: cover;
+    object-position: center 42%;
+}
+.dashboard-sidebar .sidebar-brand-copy { display: none; }
+.dashboard-sidebar .nav-links { padding: 2px 0; min-height: 0; }
+.dashboard-sidebar .nav-links li { margin: 5px 12px; }
+.dashboard-sidebar .nav-links a {
+    padding: 11px 12px;
+    gap: 10px;
+    border-radius: 16px;
+    color: rgba(255, 255, 255, 0.88);
+}
+.dashboard-sidebar .nav-links a i { width: 22px; flex: 0 0 22px; text-align: center; }
+.dashboard-sidebar .nav-links a span,
+.dashboard-sidebar .sidebar-profile .profile-info,
+.dashboard-sidebar .sidebar-profile .dropdown-arrow { display: block; }
+.dashboard-sidebar .nav-links a:hover { background: rgba(255, 255, 255, 0.20); color: #ffffff; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.22); }
+.dashboard-sidebar .nav-links li.active a { background: rgba(255, 255, 255, 0.88); color: #0c0e3f; box-shadow: 0 4px 16px rgba(12, 14, 63, 0.10), inset 0 1px 0 rgba(255, 255, 255, 0.75); }
+.dashboard-sidebar .sidebar-bottom { border-color: rgba(255, 255, 255, 0.18); }
+.dashboard-sidebar .sidebar-profile { padding: 8px; justify-content: flex-start; overflow: hidden; }
+.dashboard-sidebar .sidebar-profile img { flex: 0 0 38px; }
+.dashboard-sidebar .sidebar-profile .profile-info h4 { color: #ffffff; }
+.dashboard-sidebar .sidebar-profile .profile-info p { color: rgba(255, 255, 255, 0.75); }
+.dashboard-sidebar .sidebar-profile .dropdown-arrow { color: #ffffff; }
+.dashboard-sidebar .profile-menu { min-width: 220px; }
+.dashboard-sidebar :is(a, button, [role='button']):focus-visible { outline: 2px solid #ffffff; outline-offset: -2px; }
+/* On small screens keep the full navigation above the content, without an icon rail. */
+@media (max-width: 768px) {
+    .container:has(> .dashboard-sidebar) { flex-direction: column; }
+    .dashboard-sidebar { position: relative; inset: auto; width: calc(100% - 16px); margin: 8px; border-radius: 22px; }
+    .dashboard-sidebar .nav-links { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); overflow: visible; }
+    .dashboard-sidebar .nav-links li { margin: 4px 6px; }
+    .dashboard-sidebar .nav-links a { padding: 12px 8px; gap: 8px; font-size: 12px; }
+    .dashboard-sidebar ~ .main-content { --watermark-left: 0px; margin-left: 0; width: 100%; padding: 20px 16px; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .dashboard-sidebar, .dashboard-sidebar * { transition: none !important; }
+}
+
+/* Keep the compact rail visible at the side at every screen size. */
+.dashboard-sidebar.is-collapsed {
+    position: fixed;
+    inset: 16px auto 16px 16px;
+    width: 68px;
+    margin: 0;
+}
+.dashboard-sidebar.is-collapsed .sidebar-collapse-toggle { align-self: center; margin: 0 0 2px; }
+.dashboard-sidebar.is-collapsed .sidebar-header { padding: 6px 16px; }
+.dashboard-sidebar.is-collapsed .sidebar-header img.sidebar-brand-logo { width: 30px; height: 30px; object-fit: contain; object-position: center; }
+.dashboard-sidebar.is-collapsed .nav-links { display: block; overflow-y: auto; }
+.dashboard-sidebar.is-collapsed .nav-links li { margin: 5px 12px; }
+.dashboard-sidebar.is-collapsed .nav-links a { justify-content: center; padding: 13px 0; gap: 0; }
+.dashboard-sidebar.is-collapsed .nav-links a span,
+.dashboard-sidebar.is-collapsed .sidebar-profile .profile-info,
+.dashboard-sidebar.is-collapsed .sidebar-profile .dropdown-arrow { display: none; }
+.dashboard-sidebar.is-collapsed .sidebar-profile { justify-content: center; padding: 8px 0; gap: 0; }
+.dashboard-sidebar.is-collapsed ~ .main-content { --watermark-left: 100px; margin-left: 100px; width: calc(100% - 100px); }
+@media (max-width: 768px) {
+    .dashboard-sidebar.is-collapsed { inset: 8px auto 8px 8px; }
+    .dashboard-sidebar.is-collapsed ~ .main-content { --watermark-left: 84px; margin-left: 84px; width: calc(100% - 84px); }
+}
+
+/* Shared upper-right account menu and bottom navigation actions. */
+.dashboard-sidebar .sidebar-header { padding-top: 0; }
+.dashboard-sidebar .nav-links li { margin-top: 3px; margin-bottom: 3px; }
+.dashboard-sidebar .nav-links a { font-size: 12px; }
+.dashboard-sidebar.is-collapsed .nav-links li { margin: 3px 8px; }
+.dashboard-sidebar.is-collapsed .nav-links a { padding: 11px 0; }
+.sidebar-utilities { padding: 10px 12px 0; display: grid; gap: 4px; }
+.sidebar-utilities button, .sidebar-utilities a {
+    display: flex; align-items: center; gap: 10px; padding: 11px 12px;
+    border: 0; border-radius: 12px; color: #fff; background: transparent;
+    text-decoration: none; font-size: 12px; cursor: pointer;
+}
+.sidebar-utilities i { width: 22px; flex: 0 0 22px; text-align: center; font-size: 16px; }
+.sidebar-utilities button:hover, .sidebar-utilities a:hover { background: rgba(255,255,255,.16); }
+.dashboard-sidebar.is-collapsed .sidebar-utilities { padding: 10px 8px 0; }
+.dashboard-sidebar.is-collapsed .sidebar-utilities :is(button, a) { justify-content: center; padding: 11px 0; }
+.dashboard-sidebar.is-collapsed .sidebar-utilities span { display: none; }
+.admin-profile { position: relative; flex-shrink: 0; }
+.admin-profile #profileToggle {
+    display: flex; align-items: center; gap: 8px; padding: 5px 8px 5px 5px;
+    background: var(--card-bg); color: var(--text-primary); border: 1px solid var(--border-color);
+    border-radius: 30px; cursor: pointer; font-size: 11px;
+}
+.admin-profile img { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; }
+.admin-profile-name { max-width: 115px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.admin-profile .profile-menu { top: calc(100% + 8px); bottom: auto; left: auto; right: 0; width: 180px; }
+.admin-profile .profile-menu button { display: flex; align-items: center; gap: 10px; width: 100%; padding: 12px 16px; border: 0; color: var(--text-primary); background: transparent; text-align: left; cursor: pointer; }
+.admin-profile .profile-menu button:hover { background: var(--bg-color); }
+.admin-preferences { margin: auto; width: min(420px, calc(100% - 32px)); padding: 24px; border: 1px solid var(--border-color); border-radius: 20px; color: var(--text-primary); background: var(--card-bg); }
+.admin-preferences::backdrop { background: rgba(12,14,63,.4); backdrop-filter: blur(4px); }
+.preferences-heading { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.preferences-heading h2 { font-size: 18px; }
+.preferences-heading button { border: 0; background: transparent; color: var(--text-primary); padding: 8px; cursor: pointer; }
+.admin-preferences label { display: block; margin-bottom: 8px; font-size: 13px; }
+.admin-preferences input:not([type=hidden]), .admin-preferences select { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 8px; background: var(--input-bg); color: var(--text-primary); }
+.preferences-save { margin-top: 14px; padding: 10px 16px; border: 0; border-radius: 8px; background: var(--accent-purple); color: #fff; cursor: pointer; }
+#profileSaveStatus { margin-top: 10px; font-size: 12px; }
+@media (max-width: 768px) {
+    .admin-profile-name { display: none; }
+    .main-content .topbar { flex-wrap: wrap; gap: 12px; }
+    .main-content .top-controls { margin-left: auto; }
+}
+/* Grouped navigation: one scroll area keeps Settings and Log Out anchored. */
+.dashboard-sidebar .sidebar-sections { flex: 1; min-height: 0; overflow-y: auto; scrollbar-width: thin; scrollbar-color: rgba(255,255,255,.35) transparent; padding: 0 0 8px; }
+.dashboard-sidebar .navigation-heading { margin: 12px 16px 5px; color: rgba(255,255,255,.75); font-size: 8px; line-height: 1.5; font-weight: 600; text-transform: uppercase; letter-spacing: .7px; }
+.dashboard-sidebar .sidebar-sections .nav-links { display: block; overflow: visible; padding: 0; }
+.dashboard-sidebar .sidebar-sections .nav-links > li { margin: 2px 10px; }
+.dashboard-sidebar .sidebar-sections .nav-links a,
+.dashboard-sidebar .navigation-group-toggle { font-size: 10px; line-height: 1.5; padding: 9px 10px; border-radius: 10px; }
+.dashboard-sidebar .navigation-group-toggle { display: flex; align-items: center; gap: 10px; width: 100%; color: rgba(255,255,255,.88); background: transparent; border: 0; cursor: pointer; text-align: left; }
+.dashboard-sidebar .navigation-group-toggle > i:first-child { width: 22px; flex: 0 0 22px; text-align: center; font-size: 14px; }
+.dashboard-sidebar .navigation-group-toggle span { flex: 1; }
+.dashboard-sidebar .navigation-group-toggle:hover,
+.dashboard-sidebar .navigation-group.contains-active > button { background: rgba(255,255,255,.14); }
+.dashboard-sidebar .navigation-chevron { font-size: 8px; transition: transform .2s; }
+.dashboard-sidebar .navigation-group-toggle[aria-expanded=true] .navigation-chevron { transform: rotate(180deg); }
+.dashboard-sidebar .navigation-submenu { list-style: none; margin: 3px 8px 7px 20px; padding: 0 0 0 9px; border-left: 1px solid rgba(255,255,255,.35); }
+.dashboard-sidebar .navigation-submenu[hidden] { display: none; }
+.dashboard-sidebar .navigation-submenu li { margin: 1px 0; }
+.dashboard-sidebar .sidebar-sections .navigation-submenu a { display: block; padding: 6px 8px; font-size: 9px; }
+.dashboard-sidebar .sidebar-sections .navigation-submenu li.active a { background: rgba(255,255,255,.88); color: #0c0e3f; }
+.dashboard-sidebar.is-collapsed .navigation-heading,
+.dashboard-sidebar.is-collapsed .navigation-group-toggle span,
+.dashboard-sidebar.is-collapsed .navigation-chevron,
+.dashboard-sidebar.is-collapsed .navigation-submenu { display: none; }
+.dashboard-sidebar.is-collapsed .navigation-section + .navigation-section { margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,.15); }
+.dashboard-sidebar.is-collapsed .navigation-group-toggle { justify-content: center; padding: 9px 0; gap: 0; }
+.dashboard-sidebar.is-collapsed .sidebar-sections .nav-links > li { margin: 2px 8px; }
+.dashboard-sidebar.is-collapsed .sidebar-sections .nav-links a { padding: 9px 0; }
+@media (max-width: 768px) {
+    .dashboard-sidebar:not(.is-collapsed) .sidebar-sections { max-height: 50vh; flex: 0 1 auto; }
+}
+.workspace-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: 16px; }
+.workspace-card { padding: 24px; border: 1px solid var(--border-color); border-radius: 18px; background: var(--card-bg); }
+.workspace-card h2 { font-size: 16px; margin-bottom: 12px; }
+.workspace-card p { font-size: 12px; color: var(--text-secondary); line-height: 1.7; margin-bottom: 16px; }
+.workspace-card a { display: inline-block; color: var(--accent-pink); font-size: 12px; margin: 0 16px 10px 0; }
+.workspace-log { padding-left: 20px; }
+.workspace-log li { padding: 12px 0; font-size: 12px; border-bottom: 1px solid var(--border-color); line-height: 1.6; }
+.workspace-log time { display: block; color: var(--text-secondary); font-size: 10px; }

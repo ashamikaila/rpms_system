@@ -1,0 +1,21 @@
+.resource-page .topbar { align-items: flex-start; gap: 20px; }
+.resource-eyebrow { display: block; margin-bottom: 8px; color: var(--accent-pink); font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; }
+.resource-page h1 { font-size: clamp(21px, 2.5vw, 30px); line-height: 1.25; }
+.resource-page .topbar p { margin-top: 8px; color: var(--text-secondary); font-size: 12px; line-height: 1.6; max-width: 560px; }
+.resource-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin: 24px 0; }
+.resource-tabs a { padding: 11px 16px; border: 1px solid var(--border-color); border-radius: 12px; background: var(--card-bg); color: var(--text-secondary); text-decoration: none; font-size: 11px; font-weight: 600; }
+.resource-tabs a[aria-current] { color: var(--accent-pink); border-color: var(--accent-pink); background: rgba(238,18,128,.06); }
+.resource-tabs a:focus-visible { outline: 2px solid var(--accent-pink); outline-offset: 3px; }
+.resource-figure { max-width: 1100px; margin: 0 auto; border: 1px solid var(--border-color); border-radius: 20px; overflow: hidden; background: var(--card-bg); box-shadow: var(--shadow); }
+.resource-agenda { max-width: 680px; }
+.resource-image-surface { padding: clamp(12px, 2vw, 28px); background: #fff; }
+.resource-image-surface img { display: block; width: 100%; height: auto; object-fit: contain; }
+.resource-figure figcaption { display: flex; align-items: center; gap: 10px; padding: 15px 20px; border-top: 1px solid var(--border-color); color: var(--text-secondary); font-size: 10px; line-height: 1.6; }
+/* Keep the reference artwork clean, without the dashboard watermark over it. */
+.resource-page::after { display: none; }
+@media (max-width: 600px) {
+    .resource-tabs { gap: 6px; margin: 18px 0; }
+    .resource-tabs a { padding: 9px 11px; }
+    .resource-figure { border-radius: 14px; }
+    .resource-image-surface { padding: 8px; }
+}
