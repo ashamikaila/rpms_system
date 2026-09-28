@@ -78,10 +78,72 @@
         if (event.key === 'Escape') { closeProfile(); profile.focus(); }
     });
     const preferences = document.getElementById('adminPreferences');
+    const profileForm = document.getElementById('adminProfileForm');
+    const profileStatus = document.getElementById('profileSaveStatus');
+    const profileSubmit = profileForm.querySelector('[type="submit"]');
+    const photoInput = document.getElementById('adminProfilePhoto');
+    const photoPreview = document.getElementById('adminPhotoPreview');
+    const defaultPhoto = 'assets/images/default-avatar.svg';
+    const profileKey = 'prismProfilePreview:' + profileContainer.dataset.profileKey;
+    const fields = {
+        name: document.getElementById('adminDisplayName'),
+        email: document.getElementById('adminEmail'),
+        course: document.getElementById('adminCourse'),
+        department: document.getElementById('adminDepartment')
+    };
+    let savedProfile = Object.fromEntries(Object.entries(fields).map(([key, input]) => [key, input.value]));
+    savedProfile.photo = '';
+    try {
+        const stored = JSON.parse(localStorage.getItem(profileKey));
+        if (stored && typeof stored === 'object' && !Array.isArray(stored)) {
+            for (const key of Object.keys(fields)) {
+                if (typeof stored[key] === 'string') savedProfile[key] = stored[key];
+            }
+            if (typeof stored.photo === 'string' && /^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(stored.photo)) savedProfile.photo = stored.photo;
+        }
+    } catch (_) {}
+    let draftPhoto = savedProfile.photo;
+    let photoVersion = 0;
+    const updateProfileDisplay = () => {
+        profileContainer.querySelector('.admin-profile-name').textContent = savedProfile.name;
+        profileContainer.querySelector('img').src = savedProfile.photo || defaultPhoto;
+        const welcomeName = document.querySelector('.welcome-header h1 span');
+        if (welcomeName) welcomeName.textContent = savedProfile.name;
+    };
+    const resetProfileDraft = () => {
+        photoVersion++;
+        for (const [key, input] of Object.entries(fields)) {
+            input.value = savedProfile[key];
+            input.setCustomValidity('');
+        }
+        draftPhoto = savedProfile.photo;
+        photoPreview.src = draftPhoto || defaultPhoto;
+        photoInput.value = '';
+        photoInput.setCustomValidity('');
+        profileSubmit.disabled = false;
+        profileStatus.textContent = '';
+    };
+    const passwordForm = document.getElementById('adminPasswordForm');
+    const currentPassword = document.getElementById('adminCurrentPassword');
+    const newPassword = document.getElementById('adminNewPassword');
+    const confirmPassword = document.getElementById('adminConfirmPassword');
+    const passwordStatus = document.getElementById('passwordSaveStatus');
+    const resetPasswordDraft = () => {
+        passwordForm.reset();
+        for (const input of [currentPassword, newPassword, confirmPassword]) {
+            input.type = 'password';
+            input.setCustomValidity('');
+        }
+        passwordStatus.textContent = '';
+    };
     const openPreferences = settings => {
         closeProfile();
+        resetProfileDraft();
+        resetPasswordDraft();
+        preferences.classList.toggle('is-settings', settings);
         document.getElementById('preferencesTitle').textContent = settings ? 'Settings' : 'Edit Profile';
         document.getElementById('profileFields').hidden = settings;
+        document.getElementById('profilePasswordSection').hidden = settings;
         document.getElementById('settingsFields').hidden = !settings;
         document.getElementById('adminThemePreference').value = document.documentElement.classList.contains('dark-theme') ? 'dark' : 'light';
         preferences.showModal();
@@ -89,23 +151,84 @@
     document.getElementById('editAdminProfile').addEventListener('click', () => openPreferences(false));
     document.getElementById('navigationSettings').addEventListener('click', () => openPreferences(true));
     document.getElementById('closePreferences').addEventListener('click', () => preferences.close());
+    preferences.addEventListener('close', () => { resetProfileDraft(); resetPasswordDraft(); });
     document.getElementById('adminThemePreference').addEventListener('change', event => {
         document.documentElement.classList.toggle('dark-theme', event.target.value === 'dark');
         try { localStorage.setItem('prismTheme', event.target.value); } catch (_) {}
     });
-    document.getElementById('adminProfileForm').addEventListener('submit', async event => {
-        event.preventDefault();
-        const status = document.getElementById('profileSaveStatus');
-        const submit = event.target.querySelector('[type="submit"]');
-        submit.disabled = true;
-        status.textContent = 'Saving…';
-        try {
-            const response = await fetch('admin_profile.php', { method: 'POST', body: new FormData(event.target) });
-            const result = await response.json();
-            if (!response.ok) throw new Error(result.error || 'Unable to save changes.');
-            profileContainer.querySelector('.admin-profile-name').textContent = result.name;
-            status.textContent = 'Display name saved for this session.';
-        } catch (error) { status.textContent = error.message; }
-        finally { submit.disabled = false; }
+    fields.name.addEventListener('input', () => fields.name.setCustomValidity(fields.name.value.trim() ? '' : 'Enter your full name.'));
+    photoInput.addEventListener('change', () => {
+        const version = ++photoVersion;
+        const file = photoInput.files[0];
+        photoInput.setCustomValidity('');
+        profileStatus.textContent = '';
+        profileSubmit.disabled = false;
+        if (!file) return;
+        if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type) || file.size > 2 * 1024 * 1024) {
+            photoInput.value = '';
+            profileStatus.textContent = 'Choose a JPG, PNG, or WebP image of 2 MB or less.';
+            return;
+        }
+        profileSubmit.disabled = true;
+        const reader = new FileReader();
+        const fail = () => {
+            if (version !== photoVersion) return;
+            photoInput.value = '';
+            profileSubmit.disabled = false;
+            profileStatus.textContent = 'This image could not be opened. Please choose another photo.';
+        };
+        reader.onerror = fail;
+        reader.onload = () => {
+            const image = new Image();
+            image.onerror = fail;
+            image.onload = () => {
+                if (version !== photoVersion) return;
+                draftPhoto = reader.result;
+                photoPreview.src = draftPhoto;
+                profileSubmit.disabled = false;
+            };
+            image.src = reader.result;
+        };
+        reader.readAsDataURL(file);
     });
+    document.getElementById('removeAdminPhoto').addEventListener('click', () => {
+        photoVersion++;
+        draftPhoto = '';
+        photoInput.value = '';
+        photoPreview.src = defaultPhoto;
+        profileSubmit.disabled = false;
+        profileStatus.textContent = 'Photo removed from preview. Save changes to keep this change.';
+    });
+    profileForm.addEventListener('submit', event => {
+        event.preventDefault();
+        fields.name.setCustomValidity(fields.name.value.trim() ? '' : 'Enter your full name.');
+        if (profileSubmit.disabled || !profileForm.reportValidity()) return;
+        const nextProfile = Object.fromEntries(Object.entries(fields).map(([key, input]) => [key, input.value.trim()]));
+        nextProfile.photo = draftPhoto;
+        try {
+            localStorage.setItem(profileKey, JSON.stringify(nextProfile));
+            savedProfile = nextProfile;
+            updateProfileDisplay();
+            profileStatus.textContent = 'Profile saved in this browser. Your sign-in details have not changed.';
+        } catch (_) {
+            profileStatus.textContent = 'Could not save the preview. Try a smaller photo or enable browser storage.';
+        }
+    });
+    document.getElementById('adminShowPasswords').addEventListener('change', event => {
+        for (const input of [currentPassword, newPassword, confirmPassword]) input.type = event.target.checked ? 'text' : 'password';
+    });
+    const validatePasswords = () => {
+        newPassword.setCustomValidity(newPassword.value && newPassword.value.length < 8 ? 'Use at least 8 characters.' : newPassword.value && newPassword.value === currentPassword.value ? 'Choose a different new password.' : '');
+        confirmPassword.setCustomValidity(confirmPassword.value && confirmPassword.value !== newPassword.value ? 'Passwords must match.' : '');
+    };
+    passwordForm.addEventListener('input', () => { validatePasswords(); passwordStatus.textContent = ''; });
+    passwordForm.addEventListener('submit', event => {
+        event.preventDefault();
+        validatePasswords();
+        if (!passwordForm.reportValidity()) return;
+        // Frontend preview only: never store, log, or send password values.
+        resetPasswordDraft();
+        passwordStatus.textContent = 'Preview validated. Your password has not been changed.';
+    });
+    updateProfileDisplay();
 })();

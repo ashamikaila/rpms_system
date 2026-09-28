@@ -71,18 +71,51 @@ $navigationActive = static function ($url) use ($navigationPage, $navigationView
         <a href="logout.php" title="Log out" aria-label="Log out"><i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i><span>Log Out</span></a>
     </div>
 </aside>
-<div class="admin-profile" id="adminProfile">
+<div class="admin-profile" id="adminProfile" data-profile-key="<?= htmlspecialchars(hash('sha256', $_SESSION['user_email'] ?? 'rpms@ceu.edu.ph'), ENT_QUOTES, 'UTF-8') ?>">
     <button type="button" id="profileToggle" aria-label="Open profile menu" aria-expanded="false" aria-controls="profileMenu">
-        <img src="assets/images/default-avatar.svg" alt="">
+        <img src="<?= htmlspecialchars($_SESSION['profile_photo'] ?? 'assets/images/default-avatar.svg', ENT_QUOTES, 'UTF-8') ?>" alt="">
         <span class="admin-profile-name"><?= htmlspecialchars($_SESSION['user_name'] ?? 'CEU RPMS', ENT_QUOTES, 'UTF-8') ?></span>
         <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
     </button>
     <div class="profile-menu" id="profileMenu"><button type="button" id="editAdminProfile"><i class="fa-solid fa-user-pen" aria-hidden="true"></i> Edit Profile</button></div>
 </div>
-<dialog class="admin-preferences" id="adminPreferences">
+<dialog class="admin-preferences" id="adminPreferences" aria-labelledby="preferencesTitle">
     <form id="adminProfileForm">
         <div class="preferences-heading"><h2 id="preferencesTitle">Edit Profile</h2><button type="button" id="closePreferences" aria-label="Close"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button></div>
-        <div id="profileFields"><label for="adminDisplayName">Display name</label><input id="adminDisplayName" name="name" required maxlength="120" value="<?= htmlspecialchars($_SESSION['user_name'] ?? 'CEU RPMS', ENT_QUOTES, 'UTF-8') ?>"><input type="hidden" name="csrf" value="<?= htmlspecialchars($_SESSION['profile_csrf'], ENT_QUOTES, 'UTF-8') ?>"><p id="profileSaveStatus" role="status"></p><button class="preferences-save" type="submit">Save changes</button></div>
+        <div id="profileFields">
+            <p class="profile-intro">Update your personal information and profile photo. Changes are saved in this browser only.</p>
+            <div class="profile-photo-editor">
+                <img id="adminPhotoPreview" src="<?= htmlspecialchars($_SESSION['profile_photo'] ?? 'assets/images/default-avatar.svg', ENT_QUOTES, 'UTF-8') ?>" alt="Profile photo preview">
+                <div>
+                    <label for="adminProfilePhoto">Profile photo</label>
+                    <input id="adminProfilePhoto" name="photo" type="file" accept="image/jpeg,image/png,image/webp" aria-describedby="profilePhotoHelp">
+                    <small id="profilePhotoHelp">JPG, PNG, or WebP. Maximum 2 MB.</small>
+                    <button class="profile-text-button" type="button" id="removeAdminPhoto">Remove photo</button>
+                </div>
+            </div>
+            <div class="profile-field-grid">
+                <div class="profile-full-width"><label for="adminDisplayName">Full name</label><input id="adminDisplayName" name="name" autocomplete="name" required maxlength="120" value="<?= htmlspecialchars($_SESSION['user_name'] ?? 'CEU RPMS', ENT_QUOTES, 'UTF-8') ?>"></div>
+                <div class="profile-full-width"><label for="adminEmail">Email address</label><input id="adminEmail" name="email" type="email" autocomplete="email" required maxlength="190" value="<?= htmlspecialchars($_SESSION['profile_email'] ?? $_SESSION['user_email'] ?? 'rpms@ceu.edu.ph', ENT_QUOTES, 'UTF-8') ?>"></div>
+                <div><label for="adminCourse">Course</label><input id="adminCourse" name="course" maxlength="120" placeholder="e.g. BS Information Technology" value="<?= htmlspecialchars($_SESSION['profile_course'] ?? '', ENT_QUOTES, 'UTF-8') ?>"></div>
+                <div><label for="adminDepartment">Department</label><input id="adminDepartment" name="department" maxlength="120" placeholder="e.g. AMT Department" value="<?= htmlspecialchars($_SESSION['profile_department'] ?? '', ENT_QUOTES, 'UTF-8') ?>"></div>
+            </div>
+            <p id="profileSaveStatus" role="status" aria-live="polite"></p>
+            <button class="preferences-save" type="submit">Save changes</button>
+        </div>
         <div id="settingsFields" hidden><label for="adminThemePreference">Appearance</label><select id="adminThemePreference"><option value="light">Light</option><option value="dark">Dark</option></select></div>
     </form>
+    <section class="profile-password-section" id="profilePasswordSection" aria-labelledby="profilePasswordTitle">
+        <h3 id="profilePasswordTitle">Change password</h3>
+        <p class="profile-intro" id="profilePasswordHelp">Preview only. This form does not change your sign-in password. Use at least 8 characters for the new password.</p>
+        <form id="adminPasswordForm">
+            <div class="profile-field-grid">
+                <div class="profile-full-width"><label for="adminCurrentPassword">Current password</label><input id="adminCurrentPassword" type="password" autocomplete="current-password" required aria-describedby="profilePasswordHelp"></div>
+                <div><label for="adminNewPassword">New password</label><input id="adminNewPassword" type="password" autocomplete="new-password" minlength="8" required></div>
+                <div><label for="adminConfirmPassword">Confirm new password</label><input id="adminConfirmPassword" type="password" autocomplete="new-password" minlength="8" required></div>
+            </div>
+            <label class="profile-show-passwords"><input id="adminShowPasswords" type="checkbox"> Show passwords</label>
+            <p id="passwordSaveStatus" role="status" aria-live="polite"></p>
+            <button class="preferences-save" type="submit">Change password</button>
+        </form>
+    </section>
 </dialog>

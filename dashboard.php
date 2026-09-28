@@ -19,13 +19,7 @@ if ($current_hour >= 5 && $current_hour < 12) {
 
 $current_date_formatted = date('l, F j, Y');
 
-$total_researchers = 0;
-$pending_ierb = 0;
-$approved_ethics = 0;
-$delayed_submissions = 0;
 
-$ierb_records = [];
-$reminders = [];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -41,12 +35,14 @@ $reminders = [];
         } catch (_) {}
     </script>
     <link rel="icon" type="image/png" href="assets/images/prismicon.png">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/dashboard.css">
     <link rel="stylesheet" href="assets/css/dashboard-sidebar.css">
+    <link rel="stylesheet" href="assets/css/dashboard-overview.css">
+    <link rel="stylesheet" href="assets/css/ceu-footer.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 </head>
-<body data-reminder-user="<?php echo htmlspecialchars(hash('sha256', $user_email), ENT_QUOTES, 'UTF-8'); ?>">
+<body class="dashboard-page" data-reminder-user="<?php echo htmlspecialchars(hash('sha256', $user_email), ENT_QUOTES, 'UTF-8'); ?>">
 
 <div class="container">
     <!-- SIDEBAR WITH EASY-TO-UNDERSTAND LABELS -->
@@ -116,115 +112,99 @@ $reminders = [];
         </section>
 
         <!-- AI SUMMARY BANNER -->
-        <section class="ai-summary-banner">
+        <section class="ai-summary-banner" aria-labelledby="aiSummaryTitle">
             <div class="ai-summary-content">
                 <div class="ai-badge">
-                    <i class="fa-solid fa-wand-magic-sparkles"></i> AI Workload Insights
+                    <i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i> AI Workload Insights
                 </div>
-                <h2>No workload insights available</h2>
+                <h2 id="aiSummaryTitle">No workload insights available</h2>
                 <p>Insights will appear here after research data has been added.</p>
             </div>
-            <button class="ai-action-btn" onclick="openReportModal()"><i class="fa-solid fa-file-pdf"></i> Generate AI PDF Report</button>
+            <button type="button" class="ai-action-btn" onclick="openReportModal()"><i class="fa-solid fa-file-pdf" aria-hidden="true"></i> Generate AI PDF Report</button>
         </section>
 
-        <!-- STATISTICAL METRICS CARDS -->
-        <section class="cards">
-            <div class="card">
-                <i class="fa-solid fa-user-graduate"></i>
-                <h1 id="totalResearchersMetric"><?php echo $total_researchers; ?></h1>
-                <p>Total Student Researchers</p>
-            </div>
-            <div class="card">
-                <i class="fa-solid fa-hourglass-half"></i>
-                <h1 id="pendingIerbMetric"><?php echo $pending_ierb; ?></h1>
-                <p>Pending Ethics Review</p>
-            </div>
-            <div class="card">
-                <i class="fa-solid fa-circle-check"></i>
-                <h1 id="approvedEthicsMetric"><?php echo $approved_ethics; ?></h1>
-                <p>IERB Approved</p>
-            </div>
-            <div class="card card-alert">
-                <i class="fa-solid fa-triangle-exclamation"></i>
-                <h1 id="delayedSubmissionsMetric"><?php echo $delayed_submissions; ?></h1>
-                <p>Delayed Submissions</p>
-            </div>
+        <div class="overview-heading">
+            <div><h2>Dashboard overview</h2></div>
+            <a class="overview-link" href="reports.php"><i class="fa-regular fa-file-lines" aria-hidden="true"></i> Reports &amp; summaries</a>
+        </div>
+        <p id="overviewDataStatus" class="overview-data-status" role="status" hidden></p>
+        <section class="cards overview-cards" aria-label="Dashboard overview">
+            <a class="card" href="ierbprog.php">
+                <i class="fa-regular fa-folder-open" aria-hidden="true"></i>
+                <strong class="metric-value" id="activeIerbMetric">0</strong>
+                <p>Active IERB Records</p><small>Records not yet completed</small>
+            </a>
+            <a class="card" href="documents.php">
+                <i class="fa-regular fa-file-lines" aria-hidden="true"></i>
+                <strong class="metric-value" id="rpmsPendingMetric">&mdash;</strong>
+                <p>RPMS Pending</p><small>Documents awaiting RPMS review</small>
+            </a>
+            <a class="card" href="#adviserReviewStatus">
+                <i class="fa-regular fa-clock" aria-hidden="true"></i>
+                <strong class="metric-value">&mdash;</strong>
+                <p>Adviser Pending</p><small>Review data not connected</small>
+            </a>
+            <a class="card" href="#upcomingDeadlines">
+                <i class="fa-regular fa-calendar" aria-hidden="true"></i>
+                <strong class="metric-value" id="upcomingDeadlinesMetric">0</strong>
+                <p>Upcoming Deadlines</p><small>Official deadlines &middot; next 7 days</small>
+            </a>
         </section>
 
-        <!-- CONTENT GRID -->
-        <section class="content">
+        <section class="content overview-content">
             <div class="left-column">
-                
-                <!-- STAGE PIPELINE FUNNEL WIDGET -->
-                <div class="pipeline-card">
-                    <div class="pipeline-title">
-                        <i class="fa-solid fa-filter"></i> Research Stage Distribution
+                <section class="content-box overview-panel" aria-labelledby="ierbOverviewTitle">
+                    <div class="overview-panel-heading">
+                        <div><h2 id="ierbOverviewTitle">IERB monitoring overview</h2></div>
+                        <a class="overview-link" href="ierbprog.php">View all records <span aria-hidden="true">&rarr;</span></a>
                     </div>
-                    <div class="pipeline-steps">
-                        <div class="step-item">
-                            <span>Initial Submission</span>
-                            <strong id="initialStageCount">0 Groups</strong>
-                        </div>
-                        <div class="step-item">
-                            <span>Ethics Review</span>
-                            <strong id="reviewStageCount">0 Groups</strong>
-                        </div>
-                        <div class="step-item delayed">
-                            <span>Revision Phase</span>
-                            <strong id="revisionStageCount">0 Delayed</strong>
-                        </div>
-                        <div class="step-item approved">
-                            <span>Board Approved</span>
-                            <strong id="approvedStageCount">0 Groups</strong>
-                        </div>
+                    <div class="overview-status-grid" aria-label="Active record statuses">
+                        <div><span>In progress</span><strong id="ierbInProgressCount">0</strong></div>
+                        <div><span>Pending requirements</span><strong id="ierbPendingCount">0</strong></div>
+                        <div><span>Requires follow-up</span><strong id="ierbFollowupCount">0</strong></div>
                     </div>
-                </div>
+                    <div class="overview-table-scroll">
+                        <table class="data-table overview-table">
+                            <thead><tr><th scope="col">Protocol Code</th><th scope="col">Stage</th><th scope="col">Requirements</th><th scope="col">Status</th></tr></thead>
+                            <tbody id="ierbMonitorBody"></tbody>
+                        </table>
+                    </div>
+                    <p class="overview-caption" id="ierbPreviewCount"></p>
+                </section>
 
-                <!-- REAL-TIME IERB TRACKING TABLE -->
-                <div class="content-box">
-                    <div class="table-header">
-                        <h3><i class="fa-solid fa-list-check"></i> IERB Progress Monitor</h3>
-                        <div class="header-actions">
-                            <select class="table-filter" id="courseFilter" aria-label="Filter by course">
-                                <option value="">All courses</option>
-                            </select>
-                            <select class="table-filter" id="progressSort" aria-label="Sort by group progress">
-                                <option value="default">Sort: Group progress</option>
-                                <option value="high-to-low">Progress: High to low</option>
-                                <option value="low-to-high">Progress: Low to high</option>
-                            </select>
-                            <button class="btn-secondary-sm"><i class="fa-solid fa-file-csv"></i> Import CSV</button>
-                        </div>
+                <section class="content-box overview-panel" id="adviserReviewStatus" aria-labelledby="adviserReviewTitle">
+                    <div class="overview-panel-heading">
+                        <div><h2 id="adviserReviewTitle">Adviser review status</h2></div>
+                        <a class="overview-link" href="admin_workspace.php?view=reviews">View reviews <span aria-hidden="true">&rarr;</span></a>
                     </div>
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Group ID</th>
-                                <th>Course</th>
-                                <th>Research Title</th>
-                                <th>Stage</th>
-                                <th>Pending Requirements</th>
-                                <th>Overall Progress</th>
-                                <th>Status & Email Log</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="ierbMonitorBody"></tbody>
-                    </table>
-                </div>
+                    <div class="overview-status-grid">
+                        <div><span>Pending review</span><strong aria-label="Not available">&mdash;</strong></div>
+                        <div><span>Returned for revision</span><strong aria-label="Not available">&mdash;</strong></div>
+                        <div><span>Approved for submission</span><strong aria-label="Not available">&mdash;</strong></div>
+                    </div>
+                    <p class="overview-note">Adviser review data is not connected yet. Adviser approval allows formal RPMS submission; it does not indicate IERB approval.</p>
+                </section>
 
-                <!-- DOCUMENT REPOSITORY SUMMARY -->
-                <div class="content-box">
-                    <h3><i class="fa-solid fa-folder-tree"></i> Recent Repository Uploads</h3>
-                    <div class="repo-list">
-                        <p>No repository uploads available.</p>
+                <section class="content-box overview-panel" aria-labelledby="recentActivityTitle">
+                    <div class="overview-panel-heading">
+                        <div><h2 id="recentActivityTitle">Recent activity</h2></div>
+                        <a class="overview-link" href="admin_workspace.php?view=activity">View record history <span aria-hidden="true">&rarr;</span></a>
                     </div>
-                </div>
+                    <ol class="overview-activity" id="recentActivityList"></ol>
+                </section>
             </div>
 
             <div class="right-column">
+                <section class="content-box overview-panel" aria-labelledby="attentionTitle">
+                    <div class="overview-panel-heading"><div><h2 id="attentionTitle">Requires attention</h2></div><span class="overview-count" id="attentionCount">0</span></div>
+                    <ul class="overview-action-list" id="attentionList"></ul>
+                </section>
+                <section class="content-box overview-panel" id="upcomingDeadlines" aria-labelledby="deadlinesTitle">
+                    <div class="overview-panel-heading"><div><h2 id="deadlinesTitle">Upcoming deadlines</h2></div></div>
+                    <ul class="overview-action-list" id="officialDeadlineList"></ul>
+                </section>
                 <!-- INTERACTIVE CALENDAR WITH MONTH AND YEAR VIEWS -->
-                <div class="content-box calendar-box">
+                <div class="content-box calendar-box overview-panel">
                     <div class="calendar-top-bar">
                         <div class="cal-nav">
                             <button class="cal-nav-btn" id="prevBtn" title="Previous"><i class="fa-solid fa-chevron-left"></i></button>
@@ -257,7 +237,7 @@ $reminders = [];
                     <!-- REMINDERS AND FOLLOW-UPS -->
                     <div class="reminders-section">
                         <div class="reminders-header">
-                            <h4><i class="fa-solid fa-calendar-check"></i> Tasks & Deadlines</h4>
+                            <h4><i class="fa-solid fa-calendar-check"></i> Personal reminders</h4>
                             <a class="add-btn" href="calendar.php" title="Add reminder" aria-label="Add reminder"><i class="fa-solid fa-plus"></i></a>
                         </div>
                         <ul class="reminder-list" id="dashboardReminderList"></ul>
@@ -266,6 +246,7 @@ $reminders = [];
 
             </div>
         </section>
+        <?php require __DIR__ . '/ceu_footer.php'; ?>
     </main>
 </div>
 
@@ -325,6 +306,7 @@ $reminders = [];
 </div>
 
 <script src="assets/js/dashboard-sidebar.js"></script>
+<script src="assets/js/dashboard-overview.js"></script>
 <script>
     // Profile Dropdown Toggle
     const profileToggle = document.getElementById('profileToggle');
@@ -390,126 +372,41 @@ $reminders = [];
         } catch (_) {}
     });
 
-    // Student directory connection and IERB monitor
-    const courseFilter = document.getElementById('courseFilter');
-    const progressSort = document.getElementById('progressSort');
-    const progressTableBody = document.getElementById('ierbMonitorBody');
     const studentStorageKey = `prismStudents:${document.body.dataset.reminderUser || 'default'}`;
     let monitorStudents = [];
-
-    const escapeMonitorHtml = value => String(value ?? '').replace(/[&<>'"]/g, char => ({
-        '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
-    })[char]);
-    const progressRows = () => Array.from(progressTableBody.querySelectorAll('tr[data-course]'));
-    const progressNumber = value => parseFloat(String(value).replace('%', '')) || 0;
+    let monitorDocuments = null;
+    let recordsUnavailable = false;
+    let documentsUnavailable = false;
 
     function loadMonitorStudents() {
         try {
-            const stored = JSON.parse(localStorage.getItem(studentStorageKey));
-            monitorStudents = Array.isArray(stored) ? stored : [];
+            const stored = JSON.parse(localStorage.getItem(studentStorageKey) || '[]');
+            if (!Array.isArray(stored)) throw new Error('Invalid records');
+            monitorStudents = stored.filter(record => record && typeof record === 'object');
+            recordsUnavailable = false;
         } catch (_) {
             monitorStudents = [];
+            recordsUnavailable = true;
         }
-    }
-
-    function monitorGroups() {
-        const groups = new Map();
-        monitorStudents.forEach(student => {
-            const key = student.groupId || `student-${student.id}`;
-            if (!groups.has(key)) groups.set(key, { ...student, groupId: student.groupId || student.studentId, members: [] });
-            groups.get(key).members.push(student);
-        });
-        return Array.from(groups.values());
-    }
-
-    function latestReminder(student) {
-        const history = Array.isArray(student.history) ? student.history : [];
-        const reminder = history.find(entry => /follow-up|reminder/i.test(entry.message));
-        return reminder ? new Date(reminder.at).toLocaleDateString('en-PH', { month: 'short', day: 'numeric', year: 'numeric' }) : 'Not sent';
-    }
-
-    function updateMonitorMetrics(groups) {
-        const researcherCount = monitorStudents.reduce((total, student) => total + 1 + (Array.isArray(student.researchMembers) ? student.researchMembers.length : 0), 0);
-        document.getElementById('totalResearchersMetric').textContent = researcherCount;
-        document.getElementById('pendingIerbMetric').textContent = groups.filter(group => group.status === 'Pending').length;
-        document.getElementById('approvedEthicsMetric').textContent = groups.filter(group => group.stage === 'Completed').length;
-        document.getElementById('delayedSubmissionsMetric').textContent = groups.filter(group => group.status === 'Delayed').length;
-        const setCount = (id, value, noun = 'Groups') => document.getElementById(id).textContent = `${value} ${noun}`;
-        setCount('initialStageCount', groups.filter(group => group.stage === 'Stage 1').length);
-        setCount('reviewStageCount', groups.filter(group => group.stage === 'Stage 2').length);
-        setCount('revisionStageCount', groups.filter(group => ['Stage 3', 'Stage 4'].includes(group.stage)).length, 'Delayed');
-        setCount('approvedStageCount', groups.filter(group => group.stage === 'Completed').length);
-    }
-
-    function populateCourseFilter(groups) {
-        const selected = courseFilter.value;
-        courseFilter.querySelectorAll('option:not(:first-child)').forEach(option => option.remove());
-        [...new Set(groups.map(group => group.course).filter(Boolean))].sort().forEach(course => {
-            const option = document.createElement('option');
-            option.value = course;
-            option.textContent = course;
-            courseFilter.appendChild(option);
-        });
-        courseFilter.value = [...courseFilter.options].some(option => option.value === selected) ? selected : '';
     }
 
     function renderIerbMonitor() {
-        const groups = monitorGroups();
-        progressTableBody.replaceChildren();
-        updateMonitorMetrics(groups);
-        populateCourseFilter(groups);
-        if (!groups.length) {
-            const row = document.createElement('tr');
-            row.innerHTML = '<td colspan="8" class="empty-state">No IERB records available. Add a student entry to begin.</td>';
-            progressTableBody.appendChild(row);
-            return;
-        }
-        groups.forEach(group => {
-            const row = document.createElement('tr');
-            row.dataset.course = group.course || '';
-            row.dataset.progress = group.progress || '0';
-            const statusClass = String(group.status || 'Pending').toLowerCase().replace(/\s+/g, '-');
-            row.innerHTML = `
-                <td><strong>${escapeMonitorHtml(group.groupId)}</strong></td>
-                <td>${escapeMonitorHtml(group.course || 'Not set')}</td>
-                <td><div class="title-cell"><span>${escapeMonitorHtml(group.researchTitle || 'Research title not set')}</span><small>Lead: ${escapeMonitorHtml(group.name)}${(group.members.length - 1) + (Array.isArray(group.researchMembers) ? group.researchMembers.length : 0) > 0 ? ` +${(group.members.length - 1) + (Array.isArray(group.researchMembers) ? group.researchMembers.length : 0)} member(s)` : ''}</small></div></td>
-                <td><span class="stage-tag">${escapeMonitorHtml(group.stage || 'Stage 1')}</span></td>
-                <td>${escapeMonitorHtml(group.requirements || 'None')}</td>
-                <td><span class="progress-value">${escapeMonitorHtml(group.progress || '0')}%</span></td>
-                <td><span class="status-badge ${statusClass}">${escapeMonitorHtml(group.status || 'Pending')}</span><span class="email-status-text"><i class="fa-regular fa-paper-plane"></i> ${escapeMonitorHtml(latestReminder(group))}</span></td>
-                <td><button class="icon-btn" data-monitor-action="remind" title="Prepare follow-up email"><i class="fa-solid fa-paper-plane"></i></button><button class="icon-btn" data-monitor-action="summary" title="View quick summary"><i class="fa-solid fa-file-lines"></i></button></td>`;
-            row.querySelector('[data-monitor-action="remind"]').addEventListener('click', () => sendMonitorFollowup(group.groupId));
-            row.querySelector('[data-monitor-action="summary"]').addEventListener('click', () => openSummaryModal(group.groupId));
-            progressTableBody.appendChild(row);
-        });
-        filterAndSortProgress();
+        PrismDashboard.render(monitorStudents, monitorDocuments, { recordsUnavailable, documentsUnavailable });
     }
 
-    function filterAndSortProgress() {
-        const rows = progressRows();
-        rows.forEach(row => row.style.display = !courseFilter.value || row.dataset.course === courseFilter.value ? '' : 'none');
-        if (progressSort.value !== 'default') {
-            const direction = progressSort.value === 'high-to-low' ? -1 : 1;
-            rows.sort((a, b) => direction * (progressNumber(a.dataset.progress) - progressNumber(b.dataset.progress))).forEach(row => progressTableBody.appendChild(row));
+    async function loadDashboardDocuments() {
+        try {
+            const response = await fetch('documents_api.php?action=list', { cache: 'no-store' });
+            const result = await response.json();
+            if (!response.ok || !result.ok || !Array.isArray(result.documents)) throw new Error('Documents unavailable');
+            monitorDocuments = result.documents.filter(record => record && typeof record === 'object');
+            documentsUnavailable = false;
+        } catch (_) {
+            monitorDocuments = null;
+            documentsUnavailable = true;
         }
-    }
-
-    function sendMonitorFollowup(groupId) {
-        const student = monitorStudents.find(item => (item.groupId || item.studentId) === groupId);
-        if (!student || !confirm(`Prepare an IERB follow-up email for ${student.name}?`)) return;
-        const now = new Date().toISOString();
-        student.history = Array.isArray(student.history) ? student.history : [];
-        student.history.unshift({ message: 'IERB follow-up email prepared from Progress Monitor.', at: now });
-        student.updatedAt = now;
-        try { localStorage.setItem(studentStorageKey, JSON.stringify(monitorStudents)); } catch (_) {}
         renderIerbMonitor();
-        const subject = encodeURIComponent(`IERB Progress Follow-up - ${groupId}`);
-        const body = encodeURIComponent(`Hello ${student.name},\n\nPlease provide an update for ${student.researchTitle || 'your research project'} (${student.stage}, ${student.status}).\n\nThank you.`);
-        window.location.href = `mailto:${encodeURIComponent(student.email)}?subject=${subject}&body=${body}`;
     }
-
-    courseFilter.addEventListener('change', filterAndSortProgress);
-    progressSort.addEventListener('change', filterAndSortProgress);
 
     // Modal Control Handlers
     function openSummaryModal(targetName) {
@@ -882,6 +779,7 @@ $reminders = [];
     renderReportHistory();
 
     window.addEventListener('pageshow', () => {
+        loadDashboardDocuments();
         loadDashboardReminders();
         loadMonitorStudents();
         renderIerbMonitor();
@@ -894,7 +792,7 @@ $reminders = [];
             renderCalendar();
             renderDashboardReminders();
         }
-        if (event.key === studentStorageKey) {
+        if (event.key === studentStorageKey || event.key === null) {
             loadMonitorStudents();
             renderIerbMonitor();
         }

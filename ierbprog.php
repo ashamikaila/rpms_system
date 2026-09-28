@@ -60,6 +60,7 @@ $profile_img = 'assets/images/default-avatar.svg';
                 <div><label for="entryStudentId">Student ID</label><input id="entryStudentId" maxlength="40" required></div>
                 <div><label for="entryEmail">Email address</label><input id="entryEmail" type="email" maxlength="150" required></div>
                 <div><label for="entryGroupId">Research group ID</label><input id="entryGroupId" maxlength="40" required></div>
+                <div><label for="entryProtocolCode">Protocol code</label><input id="entryProtocolCode" maxlength="80" placeholder="Enter assigned protocol code"></div>
                 <div><label for="entryCourse">Course</label><input id="entryCourse" maxlength="80" required></div>
                 <div><label for="entryStage">Current IERB stage</label><select id="entryStage"><option>Stage 1</option><option>Stage 2</option><option>Stage 3</option><option>Stage 4</option><option>Stage 5</option><option>Completed</option></select></div>
                 <div class="ierb-entry-wide"><label for="entryResearchTitle">Research title</label><input id="entryResearchTitle" maxlength="250" required></div>

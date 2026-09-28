@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const tableBody = document.getElementById('ierbTableBody');
     const search = document.getElementById('ierbSearch');
+    let linkedRecord = new URLSearchParams(window.location.search).get('record');
     const stageFilter = document.getElementById('stageFilter');
     const statusFilter = document.getElementById('ierbStatusFilter');
     const pendingView = new URLSearchParams(window.location.search).get('view') === 'pending';
@@ -26,6 +27,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const stored = JSON.parse(localStorage.getItem(storageKey));
             students = Array.isArray(stored) ? stored : [];
         } catch (_) { students = []; }
+        if (linkedRecord) {
+            const record = students.find(student => String(student.id) === linkedRecord);
+            if (record) search.value = record.studentId || record.groupId || record.name || '';
+            linkedRecord = null;
+        }
     }
     const save = () => localStorage.setItem(storageKey, JSON.stringify(students));
     const esc = value => String(value ?? '').replace(/[&<>'"]/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[char]);
@@ -37,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const query = search.value.trim().toLowerCase();
         return students.filter(student => {
             if (pendingView && !String(student.requirements || '').trim()) return false;
-            const haystack = `${student.name} ${student.studentId} ${student.groupId || ''} ${student.researchTitle || ''}`.toLowerCase();
+            const haystack = `${student.name} ${student.studentId} ${student.groupId || ''} ${student.protocolCode || ''} ${student.researchTitle || ''}`.toLowerCase();
             return (!query || haystack.includes(query)) && (!stageFilter.value || student.stage === stageFilter.value) && (!statusFilter.value || student.status === statusFilter.value);
         });
     }
@@ -97,6 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td><div class="submission-dates">${submissionDates(student)}</div></td>
                 <td><span class="delay-indicator ${delay[0]}">${delay[1]}</span></td>
                 <td><div class="ierb-actions">
+                    <button class="ierb-action" data-action="protocol" title="Set protocol code" aria-label="Set protocol code"><i class="fa-solid fa-hashtag"></i></button>
                     <button class="ierb-action" data-action="complete" title="Mark stage complete" aria-label="Mark stage complete"><i class="fa-solid fa-check-double"></i></button>
                     <button class="ierb-action" data-action="requirement" title="Flag requirement" aria-label="Flag requirement"><i class="fa-solid fa-flag"></i></button>
                     <button class="ierb-action" data-action="note" title="Add internal note" aria-label="Add internal note"><i class="fa-solid fa-note-sticky"></i></button>
@@ -105,6 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <button class="ierb-action" data-action="followup" title="Send follow-up" aria-label="Send follow-up"><i class="fa-solid fa-paper-plane"></i></button>
                     <button class="ierb-action delete" data-action="delete" title="Delete IERB record" aria-label="Delete IERB record"><i class="fa-solid fa-trash"></i></button>
                 </div></td>`;
+            row.querySelector('[data-action="protocol"]').addEventListener('click', () => openAction(student.id, 'protocol'));
             row.querySelector('[data-action="complete"]').addEventListener('click', () => completeStage(student.id));
             row.querySelector('[data-action="requirement"]').addEventListener('click', () => openAction(student.id, 'requirement'));
             row.querySelector('[data-action="note"]').addEventListener('click', () => openAction(student.id, 'note'));
@@ -149,6 +157,7 @@ document.addEventListener('DOMContentLoaded', () => {
             name: document.getElementById('entryStudentName').value.trim(), studentId,
             email: document.getElementById('entryEmail').value.trim(),
             groupId: document.getElementById('entryGroupId').value.trim(),
+            protocolCode: document.getElementById('entryProtocolCode').value.trim(),
             course: document.getElementById('entryCourse').value.trim(), year: '',
             researchTitle: document.getElementById('entryResearchTitle').value.trim(), researchMembers: [],
             stage, requirements: document.getElementById('entryRequirements').value.trim(),
@@ -199,6 +208,14 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('ierbActionLabel').textContent = requirement ? 'Pending requirement' : deadline ? 'Deadline (YYYY-MM-DD)' : 'Internal comment';
         actionText.placeholder = requirement ? 'e.g. Missing Ethics Consent Form' : deadline ? 'e.g. 2026-10-24' : 'Write an internal note for RPMS staff...';
         actionText.value = requirement ? (student.requirements || '') : deadline ? (student.deadline || '') : '';
+        actionText.maxLength = mode === 'protocol' ? 80 : 500;
+        if (mode === 'protocol') {
+            document.getElementById('ierbActionEyebrow').textContent = 'IERB record identifier';
+            document.getElementById('ierbActionTitle').textContent = 'Set Protocol Code';
+            document.getElementById('ierbActionLabel').textContent = 'Protocol code';
+            actionText.placeholder = 'Enter the assigned protocol code';
+            actionText.value = student.protocolCode || '';
+        }
         modal.classList.add('show'); modal.setAttribute('aria-hidden', 'false'); actionText.focus();
     }
 
@@ -209,7 +226,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const student = students.find(item => item.id === actionStudentId);
         const text = actionText.value.trim();
         if (!student || !text) return;
-        if (actionMode === 'requirement') {
+        if (actionMode === 'protocol') {
+            if (text.length > 80 || /[\r\n]/.test(text)) { alert('Enter a protocol code on one line, up to 80 characters.'); return; }
+            student.protocolCode = text;
+            addHistory(student, `Protocol code set to ${text}.`);
+        } else if (actionMode === 'requirement') {
             student.requirements = text; student.status = 'Pending';
             addHistory(student, `Requirement flagged: ${text}`);
         } else if (actionMode === 'deadline') {
