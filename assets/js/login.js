@@ -10,6 +10,7 @@ loginForm.addEventListener('submit', (event) => {
         const role = Object.prototype.hasOwnProperty.call(accounts, email) ? accounts[email] : null;
         const route = demoAccounts.route(role);
         if (route) {
+            sessionStorage.setItem('prismCurrentAccount', JSON.stringify({email, role: typeof role === 'object' ? role.role : role}));
             window.location.assign(route);
             return;
         }

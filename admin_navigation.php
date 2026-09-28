@@ -21,6 +21,7 @@ $navigationSections = [
     'Reporting & Communication' => [
         ['reports.php', 'file-pdf', 'AI Reports & Summaries'],
         ['admin_notifications.php', 'bell', 'Notifications'],
+        ['admin_workspace.php?view=support', 'circle-question', 'Help & Support'],
     ],
     'Administration' => [
         ['admin_workspace.php?view=users', 'users-gear', 'User Management'],

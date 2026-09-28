@@ -21,6 +21,12 @@ $identityKey = hash('sha256', $portalRole . '|' . $userId);
     <link rel="stylesheet" href="assets/css/role-portal.css">
     <link rel="stylesheet" href="assets/css/calendar.css">
     <link rel="stylesheet" href="assets/css/role-topnav.css">
+    <?php if ($portalRole === 'Student'): ?>
+    <link rel="stylesheet" href="assets/css/ceu-footer.css">
+    <link rel="stylesheet" href="assets/css/research-resources.css">
+    <link rel="stylesheet" href="assets/css/student-navigation.css">
+    <link rel="stylesheet" href="assets/css/student-dashboard.css">
+    <?php endif; ?>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 </head>
 <body data-portal-key="<?php echo htmlspecialchars($identityKey, ENT_QUOTES); ?>" data-role="<?php echo htmlspecialchars($portalRole, ENT_QUOTES); ?>" data-name="<?php echo htmlspecialchars($userName, ENT_QUOTES); ?>" data-email="<?php echo htmlspecialchars($userEmail, ENT_QUOTES); ?>">
@@ -28,10 +34,31 @@ $identityKey = hash('sha256', $portalRole . '|' . $userId);
     <button class="portal-brand" type="button" data-go="dashboard" aria-label="PRISM dashboard"><img src="assets/images/prismlogo1.png?v=2" alt="PRISM Logo"></button>
     <ul class="portal-nav-links" id="portalNav">
         <li class="active"><button data-page="dashboard">Dashboard</button></li>
+        <?php if ($portalRole === 'Student'): ?>
+        <li><details class="portal-nav-group"><summary>Submission &amp; Progress <i class="fa-solid fa-chevron-down" aria-hidden="true"></i></summary>
+            <div class="portal-nav-submenu">
+                <span class="portal-nav-label">Documents</span>
+                <button type="button" data-page="documents">My Documents</button>
+                <button type="button" data-page="submit">Upload Documents</button>
+                <button type="button" data-page="history">Submission History</button>
+                <div class="portal-nav-divider"></div>
+                <button type="button" data-page="progress">IERB Progress</button>
+            </div>
+        </details></li>
+        <li><button type="button" data-page="notifications">Notifications</button></li>
+        <li><details class="portal-nav-group"><summary>Research Resources <i class="fa-solid fa-chevron-down" aria-hidden="true"></i></summary>
+            <div class="portal-nav-submenu">
+                <a href="https://ceu-ierb.wixsite.com/ierb" target="_blank" rel="noopener noreferrer">IERB Portal <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i><span class="portal-sr-only"> (opens in a new tab)</span></a>
+                <button type="button" data-page="sdg">Sustainable Development Goals</button>
+                <button type="button" data-page="agenda">Research Agenda</button>
+            </div>
+        </details></li>
+        <?php else: ?>
         <li><button data-page="calendar">Calendar</button></li>
         <li><button data-page="progress">IERB Progress</button></li>
         <li><button data-page="submit">Document Submission</button></li>
         <li><button data-page="documents">My Documents</button></li>
+        <?php endif; ?>
     </ul>
     <div class="portal-nav-right">
         <button class="portal-help" id="helpButton" type="button" title="Help and support" aria-label="Help and support"><i class="fa-regular fa-circle-question"></i></button>
@@ -52,24 +79,26 @@ $identityKey = hash('sha256', $portalRole . '|' . $userId);
 
         <section class="portal-page active" data-section="dashboard">
             <div class="welcome-card"><div><span><?php echo htmlspecialchars($portalRole); ?> workspace</span><h2>Welcome back, <b id="welcomeName"><?php echo htmlspecialchars($userName); ?></b>!</h2><p class="dashboard-greeting-date"><i class="fa-regular fa-calendar"></i> <b id="dashboardCurrentDate"></b></p><p id="researchTitle">No research details yet.</p></div><button class="primary-btn" data-go="submit"><i class="fa-solid fa-upload"></i> Submit document</button></div>
+            <?php if ($portalRole === 'Student'): require __DIR__ . '/student_dashboard.php'; else: ?>
             <section class="dashboard-priority" aria-label="My IERB progress"><article class="dashboard-progress-feature"><div class="dashboard-progress-copy"><span>IERB Progress</span><h2 id="dashboardStageValue">Not started</h2><div class="dashboard-progress-track" role="progressbar" aria-label="IERB progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="dashboardProgressTrack"><i id="dashboardProgressBar"></i></div><strong id="dashboardProgressPercent">0%</strong><p>Current Status: <b id="dashboardStatusValue">Not started</b></p></div><button class="dashboard-detail-button" type="button" data-go="progress">View Details <i class="fa-solid fa-arrow-right"></i></button></article><button class="dashboard-pending-card" type="button" data-go="progress"><i class="fa-solid fa-triangle-exclamation"></i><span><strong><b id="dashboardPendingValue">0</b> Pending Requirements</strong><small>View requirements and required actions</small></span><i class="fa-solid fa-chevron-right"></i></button></section>
             <section class="dashboard-status-cards" aria-label="Dashboard status cards"><button type="button" data-go="documents"><i class="fa-solid fa-folder-open"></i><span>My Submissions</span><strong id="dashboardSubmissionValue">0 documents</strong><small id="dashboardSubmissionStatus">No submissions yet</small></button><button type="button" data-go="calendar"><i class="fa-solid fa-calendar-day"></i><span>Upcoming Deadline</span><strong id="dashboardDeadlineValue">No deadline</strong><small>View deadlines and reminders</small></button></section>
             <div class="dashboard-overview-grid"><article class="panel dashboard-calendar-panel"><div class="dashboard-calendar-head"><div><h2><i class="fa-regular fa-calendar"></i> Calendar</h2><p>View deadlines and personal reminders.</p></div><div class="dashboard-calendar-nav"><button id="dashboardPreviousMonth" type="button" aria-label="Previous month"><i class="fa-solid fa-chevron-left"></i></button><strong id="dashboardMonthLabel"></strong><button id="dashboardNextMonth" type="button" aria-label="Next month"><i class="fa-solid fa-chevron-right"></i></button></div></div><div class="dashboard-calendar-weekdays" aria-hidden="true"><span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span></div><div class="dashboard-calendar-grid" id="dashboardCalendarGrid"></div></article><article class="panel dashboard-recent-panel"><div class="panel-head"><h2>Recent submissions</h2><button data-go="documents">View all</button></div><div id="recentSubmissions"></div></article></div>
+            <?php endif; ?>
         </section>
 
         <section class="portal-page" data-section="progress">
-            <div class="progress-summary panel"><div><span>Current official stage</span><h2 id="currentStage">Stage 1 — Initial Submission</h2><p>Official status is managed by RPMS/IERB and cannot be changed from this portal.</p></div><div class="progress-ring" id="progressRing"><b>20%</b></div></div>
+            <div class="progress-summary panel"><div><span>Current official stage</span><h2 id="currentStage">Stage 1 — Initial Submission</h2><p>Official status is managed by RPMS/IERB and cannot be changed from this portal.</p></div><?php if ($portalRole !== 'Student'): ?><div class="progress-ring" id="progressRing"></div><?php endif; ?></div>
             <div class="stage-list" id="stageList"></div>
             <div class="portal-two-col requirement-panels"><article class="panel"><div class="panel-head"><h2>Completed requirements</h2></div><div id="completedRequirements"></div></article><article class="panel"><div class="panel-head"><h2>Pending requirements</h2></div><div id="pendingRequirements"></div></article></div>
             <article class="panel"><div class="panel-head"><h2>Progress history &amp; remarks</h2></div><div id="progressHistory"></div></article>
         </section>
 
         <section class="portal-page" data-section="submit">
-            <article class="panel form-panel"><h2>Submit a document</h2><p>Add the research details and upload a requirement for review. PDF, DOC, DOCX, PNG, or JPG up to 1.5 MB.</p><form id="submissionForm"><div class="form-grid"><label class="wide">Research title<input id="submissionResearchTitle" maxlength="250" required placeholder="Enter the complete research title"></label><label class="wide">Research group / members<input id="submissionResearchGroup" maxlength="250" required placeholder="Enter names or a group ID"></label><label>Document type<select id="documentType" required><option value="">Select a document type</option><option>Research Protocol</option><option>Informed Consent Form</option><option>Data Collection Instrument</option><option>Revision Letter</option><option>Ethics Training Certificate</option><option>Other Supporting Document</option></select></label><label>File<input id="documentFile" type="file" accept=".pdf,.doc,.docx,.png,.jpg,.jpeg" required></label><label class="wide">Notes for reviewer<textarea id="documentNotes" rows="4" maxlength="500" placeholder="Optional context about this submission"></textarea></label></div><button class="primary-btn" type="submit"><i class="fa-solid fa-paper-plane"></i> Submit for review</button></form></article>
+            <article class="panel form-panel"><h2>Submit a document</h2><p>Add the research details and upload a requirement for review. PDF, DOC, DOCX, PNG, or JPG up to 1.5 MB.</p><form id="submissionForm"><div class="form-grid"><label class="wide">Research title<input id="submissionResearchTitle" maxlength="250" required placeholder="Enter the complete research title"></label><label class="wide">Protocol code (optional)<input id="submissionProtocolCode" name="protocol_code" maxlength="80" placeholder="Enter your assigned protocol code"></label><label class="wide">Research group / members<input id="submissionResearchGroup" maxlength="250" required placeholder="Enter names or a group ID"></label><label>Document type<select id="documentType" required><option value="">Select a document type</option><option>Research Protocol</option><option>Informed Consent Form</option><option>Data Collection Instrument</option><option>Revision Letter</option><option>Ethics Training Certificate</option><option>Other Supporting Document</option></select></label><label>File<input id="documentFile" type="file" accept=".pdf,.doc,.docx,.png,.jpg,.jpeg" required></label><label class="wide">Notes for reviewer<textarea id="documentNotes" rows="4" maxlength="500" placeholder="Optional context about this submission"></textarea></label></div><button class="primary-btn" type="submit"><i class="fa-solid fa-paper-plane"></i> Submit for review</button></form></article>
         </section>
 
         <section class="portal-page" data-section="documents">
-            <article class="panel"><div class="panel-head"><div><h2>My Documents</h2><p>Track, preview, download, and resubmit your files.</p></div><select id="documentFilter"><option value="">All statuses</option><option>Submitted</option><option>Under Review</option><option>Revision Requested</option><option>Approved</option></select></div><div class="document-table-wrap"><table><thead><tr><th>Document</th><th>Type</th><th>Submitted</th><th>Status</th><th>Remarks</th><th>Actions</th></tr></thead><tbody id="documentRows"></tbody></table></div></article>
+            <article class="panel"><div class="panel-head"><div><h2>My Documents</h2><p>Track, preview, download, and resubmit your files.</p></div><select id="documentFilter"><option value="">All statuses</option><option>Submitted</option><option>Under Review</option><option value="adviser-review">Awaiting adviser review</option><option value="adviser-revision">Adviser revision required</option><option>Revision Requested</option><option>Approved</option></select></div><div class="document-table-wrap"><table><thead><tr><th>Document</th><th>Protocol Code</th><th>Type</th><th>Submitted</th><th>Status</th><th>Remarks</th><th>Actions</th></tr></thead><tbody id="documentRows"></tbody></table></div></article>
         </section>
 
         <section class="portal-page" data-section="notifications">
@@ -89,10 +118,23 @@ $identityKey = hash('sha256', $portalRole . '|' . $userId);
         <section class="portal-page" data-section="profile">
             <div class="portal-two-col"><article class="panel form-panel"><h2>Personal information</h2><p>Your role and account email are shown for reference.</p><form id="profileForm"><div class="profile-photo-control"><img id="profileImagePreview" src="<?php echo htmlspecialchars($profileImg, ENT_QUOTES); ?>" alt="Profile preview"><label class="profile-photo-button"><span>Edit photo</span><input id="profileImageInput" type="file" accept="image/png,image/jpeg,image/webp" hidden></label><button id="removeProfileImage" type="button">Remove</button></div><div class="form-grid"><label>Full name<input id="profileName" required maxlength="120"></label><label>Email<input id="profileEmail" type="email" readonly></label><label>Role<input id="profileRole" readonly></label><label>Student / Employee ID<input id="profileId" maxlength="40"></label><label>Contact number<input id="profilePhone" maxlength="30"></label></div><button class="primary-btn" type="submit">Save permitted information</button></form></article><article class="panel form-panel"><h2>Change password</h2><p>Use at least 8 characters.</p><form id="passwordForm"><label>Current password<input id="currentPassword" type="password" required></label><label>New password<input id="newPassword" type="password" minlength="8" required></label><label>Confirm new password<input id="confirmPassword" type="password" minlength="8" required></label><button class="primary-btn" type="submit">Change password</button></form></article></div>
         </section>
+        <?php if ($portalRole === 'Student'): ?>
+        <section class="portal-page" data-section="history">
+            <article class="panel"><div class="panel-head"><div><h2>Submission History</h2><p>All your uploaded documents, newest first.</p></div><button type="button" data-go="submit">Upload document</button></div><div id="submissionHistory"></div></article>
+        </section>
+        <section class="portal-page" data-section="sdg">
+            <figure class="resource-figure resource-sdg"><div class="resource-image-surface"><img src="assets/images/SDG.jpg" alt="The 17 United Nations Sustainable Development Goals" width="2048" height="1448" loading="lazy"></div><figcaption>United Nations &middot; 17 Sustainable Development Goals</figcaption></figure>
+        </section>
+        <section class="portal-page" data-section="agenda">
+            <figure class="resource-figure resource-agenda"><div class="resource-image-surface"><img src="assets/images/Research_Matrix.png" alt="CEU Malolos Research Agenda 2023–2028: research clusters and their corresponding Sustainable Development Goals" width="612" height="786" loading="lazy"></div><figcaption>CEU Malolos &middot; Research Agenda 2023–2028</figcaption></figure>
+        </section>
+        <?php require __DIR__ . '/ceu_footer.php'; ?>
+        <?php endif; ?>
     </main>
 </div>
-<div class="support-modal" id="supportModal" hidden><div class="support-modal-card" role="dialog" aria-modal="true" aria-labelledby="supportModalTitle"><div class="support-modal-head"><div><span>Help &amp; Support</span><h2 id="supportModalTitle">Contact RPMS staff</h2></div><button id="closeSupportModal" type="button" aria-label="Close help form"><i class="fa-solid fa-xmark"></i></button></div><p>Report a problem or ask the RPMS team a question.</p><form id="supportForm"><label>How can we help?<select id="supportType" required><option value="Ask RPMS staff">Ask RPMS staff</option><option value="Report a problem">Report a problem</option></select></label><label>Subject<input id="supportSubject" maxlength="120" required placeholder="Briefly describe your concern"></label><label>Message<textarea id="supportMessage" rows="5" maxlength="1000" required placeholder="Add the details RPMS staff will need..."></textarea></label><div class="support-modal-actions"><button id="cancelSupport" type="button">Cancel</button><button class="primary-btn" type="submit"><i class="fa-solid fa-paper-plane"></i> Send request</button></div></form></div></div>
+<div class="support-modal" id="supportModal" hidden><div class="support-modal-card" role="dialog" aria-modal="true" aria-labelledby="supportModalTitle"><div class="support-modal-head"><div><span>Help &amp; Support</span><h2 id="supportModalTitle">Contact RPMS staff</h2></div><button id="closeSupportModal" type="button" aria-label="Close help form"><i class="fa-solid fa-xmark"></i></button></div><p>Report a problem or ask the RPMS team a question.</p><form id="supportForm"><label>How can we help?<select id="supportType" required><option value="Ask RPMS staff">Ask RPMS staff</option><option value="Report a problem">Report a problem</option><option value="Feedback or concern">Feedback or concern</option></select></label><label>Subject<input id="supportSubject" maxlength="120" required placeholder="Briefly describe your concern"></label><label>Message<textarea id="supportMessage" rows="5" maxlength="1000" required placeholder="Add the details RPMS staff will need..."></textarea></label><div class="support-modal-actions"><button id="cancelSupport" type="button">Cancel</button><button class="primary-btn" type="submit"><i class="fa-solid fa-paper-plane"></i> Send request</button></div></form></div></div>
 <div class="toast" id="toast" role="status"></div>
+<script src="assets/js/student-dashboard.js"></script>
 <script src="assets/js/role-portal.js"></script>
 <script src="assets/js/role-calendar.js"></script>
 </body>

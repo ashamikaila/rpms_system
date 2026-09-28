@@ -1,0 +1,24 @@
+.portal-nav-group { position: relative; }
+.portal-nav-group summary { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 8px; color: var(--text-secondary); font: 600 11px Montserrat, sans-serif; white-space: nowrap; cursor: pointer; list-style: none; }
+.portal-nav-group summary::-webkit-details-marker { display: none; }
+.portal-nav-group summary i { font-size: 9px; transition: transform .2s; }
+.portal-nav-group[open] summary i { transform: rotate(180deg); }
+.portal-nav-group[open] summary, .portal-nav-links li.active summary { color: var(--accent-pink); background: var(--card-bg); }
+.portal-nav-submenu { position: absolute; top: calc(100% + 12px); left: 0; z-index: 1; display: grid; min-width: 245px; padding: 8px; border: 1px solid var(--border-color); border-radius: 12px; background: var(--card-bg); box-shadow: 0 12px 32px rgba(12,14,63,.18); }
+.portal-nav-links .portal-nav-submenu button, .portal-nav-submenu a { display: block; width: 100%; padding: 11px 12px; border-radius: 7px; color: var(--text-primary); background: transparent; box-shadow: none; font: 500 11px Montserrat, sans-serif; text-align: left; text-decoration: none; white-space: normal; }
+.portal-nav-links .portal-nav-submenu button:hover, .portal-nav-links .portal-nav-submenu button[aria-current="page"], .portal-nav-submenu a:hover { color: var(--accent-pink); background: var(--bg-color); }
+.portal-nav-label { padding: 8px 12px 5px; color: var(--text-secondary); font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; }
+.portal-nav-divider { margin: 6px 10px; border-top: 1px solid var(--border-color); }
+.portal-nav-group summary:focus-visible, .portal-nav-submenu a:focus-visible, .portal-nav-links button:focus-visible { outline: 2px solid var(--accent-pink); outline-offset: 2px; }
+.portal-sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+@media (max-width: 1120px) {
+    body[data-role="Student"] { padding-top: 176px; }
+    .portal-navbar { height: auto; min-height: 122px; grid-template-rows: 66px auto; }
+    .portal-nav-links { flex-wrap: wrap; overflow: visible; padding: 5px 0 12px; }
+    .portal-nav-group { position: static; }
+    .portal-nav-submenu { top: calc(100% + 6px); left: 12px; right: 12px; min-width: 0; max-height: 65vh; overflow-y: auto; }
+}
+@media (max-width: 620px) {
+    body[data-role="Student"] { padding-top: 196px; }
+    .portal-nav-group summary { padding: 8px; font-size: 9px; }
+}

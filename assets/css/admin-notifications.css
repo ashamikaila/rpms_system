@@ -1,0 +1,41 @@
+.notification-layout { display:grid; grid-template-columns:minmax(0,1fr); gap:24px; margin-top:24px; }
+.notification-composer { padding:28px; }
+.notification-card-heading { margin-bottom:24px; }
+.notification-card-heading h2 { margin:0; color:var(--text-primary); font-size:17px; }
+.notification-card-heading p { margin-top:8px; color:var(--text-secondary); font-size:11px; line-height:1.7; }
+.notification-fields { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); align-items:start; gap:24px; }
+.notification-composer label { display:grid; gap:9px; margin-bottom:22px; color:var(--text-primary); font-size:12px; font-weight:600; }
+.notification-fields > label { align-content:start; line-height:18px; }
+.notification-fields select { height:48px; }
+.notification-composer [hidden] { display:none; }
+.notification-composer input:not([type="checkbox"]),.notification-composer select,.notification-composer textarea { width:100%; min-width:0; padding:13px 14px; border:1px solid var(--border-color); border-radius:9px; background:var(--input-bg); color:var(--text-primary); font:12px/1.6 Montserrat,sans-serif; }
+.notification-composer textarea { min-height:190px; resize:vertical; }
+.notification-composer label small { color:var(--text-secondary); font-size:10px; font-weight:400; }
+.notification-message-meta { display:flex; justify-content:flex-end; gap:16px; margin-top:-12px; margin-bottom:24px; color:var(--text-secondary); font-size:10px; }
+.notification-composer small:empty,.notification-composer p:empty { display:none; }
+.notification-reminder { padding:18px; border:1px solid var(--border-color); border-radius:10px; background:var(--bg-color); }
+.notification-composer .notification-check { display:flex; align-items:flex-start; gap:12px; margin:0; cursor:pointer; }
+.notification-check input { width:16px; height:16px; margin-top:2px; accent-color:var(--accent-purple); }
+.notification-check small { display:block; margin-top:6px; line-height:1.6; }
+.notification-reminder #scheduleLabel { margin:18px 0 0; max-width:360px; }
+.notification-controls { display:flex; justify-content:flex-end; flex-wrap:wrap; gap:10px; margin-top:24px; }
+.notification-controls button { padding:12px 18px; font:600 11px Montserrat,sans-serif; cursor:pointer; }
+.notification-secondary { border:1px solid var(--border-color); border-radius:8px; color:var(--text-primary); background:var(--card-bg); }
+.notification-local-note { margin-top:16px; color:var(--text-secondary); font-size:10px; line-height:1.7; }
+#notificationStatus { margin-top:16px; color:var(--text-primary); font-size:12px; }
+.notification-history { overflow:hidden; }
+.notification-history .notification-card-heading { padding:24px 28px; margin:0; }
+.notification-table-wrap { overflow:auto; }
+.notification-table-wrap table { width:100%; min-width:760px; border-collapse:collapse; text-align:left; }
+.notification-table-wrap th { padding:14px 18px; color:var(--text-secondary); background:var(--bg-color); font-size:10px; font-weight:600; }
+.notification-table-wrap td { padding:18px; border-top:1px solid var(--border-color); color:var(--text-primary); font-size:11px; line-height:1.7; }
+.notification-preview { max-width:320px; overflow-wrap:anywhere; }
+.notification-delivery { display:inline-block; padding:4px 9px; border-radius:20px; background:var(--bg-color); color:var(--text-secondary); font-size:10px; white-space:nowrap; }
+.notification-view { padding:7px 10px; border:1px solid var(--border-color); border-radius:7px; color:var(--accent-pink); background:var(--card-bg); font:600 10px Montserrat,sans-serif; cursor:pointer; }
+.notification-dialog { margin:auto; padding:26px; width:min(520px,94vw); max-height:85vh; overflow:auto; border:1px solid var(--border-color); border-radius:14px; background:var(--card-bg); color:var(--text-primary); }
+.notification-dialog::backdrop { background:rgba(12,14,63,.55); }
+.notification-dialog h2 { font-size:18px; }
+.notification-dialog p { margin-top:16px; font-size:12px; line-height:1.8; }
+#notificationDetailMessage { white-space:pre-wrap; overflow-wrap:anywhere; }
+.notification-composer :is(input,select,textarea,button):focus-visible,.notification-dialog button:focus-visible { outline:2px solid var(--accent-pink); outline-offset:3px; }
+@media(max-width:650px) { .notification-fields { grid-template-columns:1fr; gap:0; } .notification-composer { padding:20px; } .notification-history .notification-card-heading { padding:20px; } .notification-message-meta { flex-wrap:wrap; } }

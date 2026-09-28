@@ -7,7 +7,7 @@
     <div class="ceu-footer-details">
         <a class="ceu-footer-brand" href="https://www.ceu.edu.ph/" target="_blank" rel="noopener noreferrer" aria-label="Visit the Centro Escolar University website (opens in a new tab)">
             <span class="ceu-footer-logo"><img src="assets/images/CEU_LOGO_NEW.png" alt="Centro Escolar University logo" width="6250" height="6250" loading="lazy"></span>
-            <span><strong>Centro Escolar<br>University</strong><small>Malolos Campus</small></span>
+            <span><strong>CENTRO ESCOLAR UNIVERSITY</strong><small>Malolos Campus</small></span>
         </a>
         <div class="ceu-footer-contact">
             <h2>Contact us</h2>
