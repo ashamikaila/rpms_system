@@ -1,18 +1,19 @@
 .unified-login { min-height:100vh; height:auto; overflow:auto; }
 .unified-login .background-overlay { min-height:100vh; height:auto; }
 .unified-login .login-card { width:min(430px, 100%); }
-.unified-login .register-card { width:min(430px, 100%); padding:18px 24px; }
-.unified-login .register-card h2 { margin-top:0; font-size:19px; }
-.unified-login .register-card .subtitle { margin-bottom:10px; font-size:12px; }
-#registerForm { display:grid; grid-template-columns:minmax(0, 1fr); gap:7px; }
+.unified-login .register-card { width:min(430px, 100%); padding:28px 24px; }
+.unified-login .register-card h2 { margin-top:0; font-size:22px; }
+.unified-login .register-card .subtitle { margin-top:8px; margin-bottom:20px; font-size:13px; line-height:1.5; }
+#registerForm { display:grid; grid-template-columns:minmax(0, 1fr); gap:14px; }
 #registerForm .login-label { margin:0 0 3px 10px; font-size:11px; }
-#registerForm .input-group input, #registerForm select { height:36px; font-size:12px; }
-#registerForm > button { height:40px; margin-top:3px; font-size:13px; }
+#registerForm .input-group input, #registerForm select { height:48px; font-size:14px; }
+#registerForm .input-group input { padding-right:18px; }
+#registerForm > button { height:50px; margin-top:4px; font-size:15px; }
 #registerForm .registration-field { min-width:0; }
 #registerForm .registration-field[hidden] { display:none; }
 #registerForm .input-group { margin-bottom:0; }
 #registerForm > button, #registerForm > .success-message, #registerForm > .register-text { grid-column:1 / -1; }
-#registerForm > .register-text { margin-top:0; font-size:12px; }
+#registerForm > .register-text { margin-top:2px; font-size:13px; }
 #registrationPreview { margin-top:18px; line-height:1.5; }
 #accountRole, #yearLevel { width:100%; height:48px; padding:0 18px; border:1px solid #dedee8; border-radius:24px; background:#f3f3f3; color:#0c0e3f; font:inherit; font-size:13px; }
 #accountRole:focus-visible, #yearLevel:focus-visible { outline:2px solid #ee1280; outline-offset:2px; }
@@ -341,6 +342,14 @@ button:hover{
     text-decoration:underline;
 }
 
+.login-account-note{
+    margin-top:12px;
+    color:#888;
+    font-size:13px;
+    line-height:1.5;
+    text-align:center;
+}
+
 .register-card{
     width:430px;
     background:rgba(255,255,255,.96);
@@ -588,8 +597,9 @@ button:hover{
 }
 
 .prism-branding h1 span{
-    color:#ee1280;
-    background:linear-gradient(90deg,#0c0e3f,#ee1280);
+    display:inline-block;
+    color:#df4b9e;
+    background:linear-gradient(90deg,#df4b9e 0%,#bc65b3 50%,#8585c7 100%);
     -webkit-background-clip:text;
     background-clip:text;
     -webkit-text-fill-color:transparent;
@@ -636,6 +646,7 @@ button:hover{
         width:100%;
         padding:22px;
     }
+
 
     .logo-main{
         width:175px;

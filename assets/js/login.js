@@ -14,7 +14,7 @@ loginForm.addEventListener('submit', (event) => {
             window.location.assign(route);
             return;
         }
-        loginError.textContent = 'Please register this school email and select your category first.';
+        loginError.textContent = 'Account not found. RPMS staff can register; research advisers and students should contact the RPMS office for their login.';
     } catch (_) {
         loginError.textContent = 'Unable to read your category. Please enable browser storage and try again.';
     }

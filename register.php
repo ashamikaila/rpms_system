@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -6,7 +6,7 @@
     <title>Register | PRISM</title>
     <link rel="icon" type="image/png" href="assets/images/prismicon.png">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/style.css?v=<?= filemtime(__DIR__ . '/assets/css/style.css') ?>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 </head>
 <body class="unified-login">
@@ -15,79 +15,40 @@
         <div class="logo-container">
             <img src="assets/images/prismlogo1.png" class="logo-main" alt="PRISM logo">
         </div>
-        <h2>Create your account</h2>
-        <p class="subtitle">Use your CEU school email to register.</p>
+        <h2>RPMS Staff Registration</h2>
+        <p class="subtitle">Create an administrator account using the private staff registration code.</p>
         <!-- Frontend preview: fields intentionally have no names so credentials are never submitted. -->
         <form id="registerForm" action="register.php" method="get">
-<div class="registration-field" id="accountRoleField">
-            <label class="login-label" for="accountRole">Account category</label>
-            <div class="input-group">
-                <select id="accountRole" required>
-                    <option value="">Select your category</option>
-                    <option value="student">Student</option>
-                    <option value="adviser">Research Adviser</option>
-                    <option value="staff">RPMS Staff</option>
-                </select>
-            </div>
+<div class="registration-field">
+<div class="input-group"><i class="fa-solid fa-key" aria-hidden="true"></i><input type="password" id="staffRegistrationCode" aria-label="Staff registration code" placeholder="Staff registration code" autocomplete="off" required></div>
 </div>
-<div class="registration-field" id="fullNameField">
-            <label class="login-label" for="fullName">Full name</label>
+<div class="registration-field">
+<div class="input-group"><i class="fa-solid fa-id-card" aria-hidden="true"></i><input type="text" id="employeeId" aria-label="Employee ID" placeholder="Employee ID" maxlength="60" required></div>
+</div><div class="registration-field" id="fullNameField">
             <div class="input-group">
                 <i class="fa-solid fa-user" aria-hidden="true"></i>
-                <input type="text" id="fullName" placeholder="Enter your full name" autocomplete="name" maxlength="120" required>
-            </div>
-</div>
-<div class="registration-field" id="departmentField" hidden>
-            <label class="login-label" for="department">Department</label>
-            <div class="input-group">
-                <i class="fa-solid fa-building-columns" aria-hidden="true"></i>
-                <input type="text" id="department" placeholder="e.g. AMT Department" maxlength="120" required>
-            </div>
-</div>
-<div class="registration-field" id="courseField" hidden>
-            <label class="login-label" for="course">Course</label>
-            <div class="input-group">
-                <i class="fa-solid fa-graduation-cap" aria-hidden="true"></i>
-                <input type="text" id="course" placeholder="e.g. BS Nursing" maxlength="120">
-            </div>
-</div>
-<div class="registration-field" id="yearLevelField" hidden>
-            <label class="login-label" for="yearLevel">Year level</label>
-            <div class="input-group">
-                <select id="yearLevel">
-                    <option value="">Select year level</option>
-                    <option value="1">1st year</option>
-                    <option value="2">2nd year</option>
-                    <option value="3">3rd year</option>
-                    <option value="4">4th year</option>
-                    <option value="5">5th year</option>
-                    <option value="6">6th year</option>
-                    <option value="graduate">Graduate level</option>
-                </select>
+                <input type="text" id="fullName" aria-label="Full name" placeholder="Enter your full name" autocomplete="name" maxlength="120" required>
             </div>
 </div>
 <div class="registration-field" id="emailField">
-            <label class="login-label" for="email">School email</label>
             <div class="input-group">
                 <i class="fa-solid fa-envelope" aria-hidden="true"></i>
-                <input type="email" id="email" placeholder="name@ceu.mls.edu.ph"
-                    pattern="[^@\s]+@[cC][eE][uU]\.[mM][lL][sS]\.[eE][dD][uU]\.[pP][hH]"
-                    title="Use your @ceu.mls.edu.ph school email address."
+                <input type="email" id="email" aria-label="Email" placeholder="@ceu.edu.ph, @mls.ceu.edu.ph, @gmail.com"
+                    pattern="[^@\s]+@([cC][eE][uU]\.[eE][dD][uU]\.[pP][hH]|[mM][lL][sS]\.[cC][eE][uU]\.[eE][dD][uU]\.[pP][hH]|[gG][mM][aA][iI][lL]\.[cC][oO][mM])"
+                    title="Use an @ceu.edu.ph, @mls.ceu.edu.ph, or @gmail.com email address."
                     autocomplete="username" autocapitalize="none" spellcheck="false" required>
             </div>
 </div>
 <div class="registration-field" id="passwordField">
-            <label class="login-label" for="password">Password</label>
             <div class="input-group">
                 <i class="fa-solid fa-lock" aria-hidden="true"></i>
-                <input type="password" id="password" placeholder="Password" autocomplete="new-password" required>
+                <input type="password" id="password" aria-label="Password (8+ characters)" placeholder="Password (8+ characters)" minlength="8" autocomplete="new-password" required>
             </div>
 </div>
 <div class="registration-field" id="confirmPasswordField">
-            <label class="login-label" for="confirmPassword">Confirm password</label>
             <div class="input-group">
                 <i class="fa-solid fa-lock" aria-hidden="true"></i>
-                <input type="password" id="confirmPassword" placeholder="Confirm password" autocomplete="new-password" required>
+                <input type="password" id="confirmPassword" aria-label="Confirm password" placeholder="Confirm password" minlength="8" autocomplete="new-password" required>
             </div>
 </div>
             <button type="submit">Register</button>
@@ -97,6 +58,8 @@
     </div>
 </div>
 <script src="assets/js/demo-accounts.js"></script>
-<script src="assets/js/register.js"></script>
+<script src="assets/js/register.js?v=staff-registration-1"></script>
 </body>
 </html>
+
+
